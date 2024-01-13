@@ -1,3 +1,5 @@
+# GioviSpecs 0.31.1
+
 "Backslash: (\\)" -> \out
 "Space: (\s)" -> \out
 "New line: (\n)" -> \out
