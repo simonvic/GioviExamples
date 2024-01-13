@@ -1,0 +1,48 @@
+# GioviSpecs 0.31.1
+
+a [Int] <- [1 2 3 4]
+"Iterating over $a" -> \out
+for i in a do {
+	i -> \out
+}
+
+"----------------------------------------------------" -> \out
+
+m [Int : Text] <- [
+	1 : "a"
+	2 : "b"
+	3 : "c"
+]
+"Iterating over $m with key : value" -> \out
+for key : value in m do {
+	"$key : $value" -> \out
+}
+"Iterating over $m with keys" -> \out
+for key in m do {
+	"$key : ${m@key}" -> \out
+}
+
+"----------------------------------------------------" -> \out
+
+Color <r Int, g Int, b Int>
+colors [Color] <- [Color.<1 2 3> Color.<4 5 6> Color.<7 8 9>]
+
+"Iterating over $colors" -> \out
+for c in colors do {
+	c -> \out
+}
+
+"\nIterating over $colors with deconstruction" -> \out
+for <r g b> in colors do {
+	"red:$r green:$g blue:$b" -> \out
+}
+
+"\nIterating over $colors with deconstruction" -> \out
+for c <r g b> in colors do {
+	"$c\n\tred:$r green:$g blue:$b" -> \out
+}
+
+#[<r:1 g:2 b:3>, <r:4 g:5 b:6>, <r:7 g:8 b:9>] -> \out
+#for c in [<r:1 g:2 b:3>, <r:4 g:5 b:6>, <r:7 g:8 b:9>] do {
+#	"$c\n\t<red:$r green:$g blue:$b>" -> \out
+#}
