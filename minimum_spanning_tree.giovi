@@ -1,0 +1,160 @@
+# GioviSpecs 0.31.1
+
+constant INF Int <- 99999999
+
+# TODO: actually implement priority queue
+
+#?{
+# Extract the minimum from a (fake) priority queue
+# @param queue
+# @return minimum edge
+}#
+extractMin(queue [Text : Int]) => Text {
+	min Text <- queue@@@0 # get first key
+	for u : cost in queue do {
+		if cost < queue@min do min <- u
+	}
+	if min != default do {
+		queue -<- min
+	}
+	=> min
+}
+
+#?{
+# Print graph
+# @param graph (adjacency list)
+}#
+printGraph(graph [Text : [Text : Int]]) {
+	"Edges: $graph" -> \out
+	for u : edges in graph do {
+		for v : cost in edges do {
+			"$u <--$cost--> $v" -> \out
+		}
+		"" -> \out
+	}
+}
+
+#?{
+# Print MST
+# @param mst [child : parent]
+}#
+printMST(mst [Text : Text]) {
+	"MST: " -> \out
+	mstCost Int
+	for child : parent in mst do {
+		if parent = "" do {
+			child -> \out
+		} else {
+			"$parent <--${graph@parent@child}--> $child" -> \out
+			graph@parent@child ->+ mstCost
+		}
+	}
+	"cost: $mstCost" -> \out
+}
+
+#?{
+# Prim's greedy algorithm to find MST (Minimum Spanning Tree)
+# by holding unexplored nodes in a priority queue with cost to reach it as key;
+# while queue is not empty, find cheapest edge and add it to the MST
+# @param graph (adjacency list)
+# @return mst [child : parent]
+}#
+prim(graph [Text : [Text : Int]]) => [Text : Text] {
+
+	# (Fake) priority queue, with cost as key
+	queue [Text : Int]
+	# init queue with infinite cose
+	for u : edges in graph do queue +<- [u : INF]
+
+	# List of explored nodes
+	explored [Text]
+
+	# MST represented with child:parent map
+	mst [Text : Text]
+	# init mst
+	for u in graph do [u : ""] ->+ mst
+
+	repeat if queue@% != 0 {
+		"\nqueue: $queue" -> \out
+
+		# Extract vertex with minimum cost from the queue
+		extractMin(queue) -> min Text
+		min ->+ explored
+
+		graph@min -> exitingEdgesFromMin [Text : Int]
+
+		# Print exiting edges
+		"min: $min" -> \out
+		for v in exitingEdgesFromMin do {
+			if v ~= explored do skip
+			"\t<--${exitingEdgesFromMin@v}--> $v" -> \out
+		}
+
+		for v : cost in exitingEdgesFromMin do {
+			if v ~= explored do skip
+			if cost < queue@v do {
+				[v : cost] ->+ queue
+				mst@v <- min
+			}
+		}
+	}
+	"\nExplored $explored" -> \out
+	=> mst
+}
+
+
+# Kruskall
+getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [Text : [Text : Int]] { }
+areInDifferentComponents(u Text, v Text) => Bool { }
+mergeComponents(u Text, v Text) {}
+kruskall(graph [Text : [Text : Int]]) => [Text : Text] {
+	# TODO: implement
+	mst [Text : Text]
+	=> mst
+	# List of connected components, basically mst [child:parent]
+	components [[Text : Text]] 
+	getEdgesOrderedByIncreasingCost(graph) -> edges [Text : [Text : Int]]
+	for u : v in edges do {
+		if areInDifferentComponents(u, v) do {
+			[u : v] ->+ mst
+			mergeComponents(u, v)
+		}
+	}
+	=> mst
+}
+
+# Graph represented via adjacency list
+# u : [v : cost]
+graph [Text : [Text : Int]] <- [
+	"a" : ["b":5 "e":3]
+	"b" : ["a":5 "c":1 "d":9 "f":2]
+	"c" : ["b":1 "e":6]
+	"d" : ["b":9 "e":7]
+	"e" : ["a":3 "c":6 "d":7 "f":8]
+	"f" : ["b":2 "e":8]
+]
+
+printGraph(graph)
+algorithm Text
+repeat {
+	"{
+	------------------
+	Select algorithm:
+		0) to exit
+		1) Prim
+		2) Kruskall
+	> }" ->+ \out
+	\in -> algorithm Text
+	mst [Text : Text]
+	if algorithm {
+		= "0" do break;
+		= "1" do prim(graph) -> mst
+		= "2" do kruskall(graph) -> mst
+	} else default -> algorithm 
+	if algorithm = default do {
+		"Invalid algorithm" -> \out
+	} else {
+		"------------------" -> \out
+		printMST(mst)
+	}
+}
