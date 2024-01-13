@@ -1,0 +1,138 @@
+# GioviSpecs 0.32.1
+
+Author <
+	name Text
+	surname Text
+	age Natural
+>
+
+Book <
+	title Text
+	description Text
+	author Author
+	price Real
+	pageCount Natural
+>
+
+#?{
+#	@brief Convert a list of book to text
+#	@param shelf - list of book
+#	@return list of text
+}#
+shelfToText(shelf [Book]) => [Text] {
+	books [Text]
+	for book in shelf do {
+		books +<- "{
+			Title:        ${book.title}
+			Description:  ${book.description}
+			Price:        ${book.price}
+			Page count:   ${book.pageCount}
+			Author:       ${book.author}
+				Name:       ${book.author.name}
+				Surname:    ${book.author.surname}
+				Age:        ${book.author.age}
+			}"
+	}
+	=> books
+}
+
+#?{
+#	@brief Convert a list of book to a HTML table
+#	@param shelf - list of book
+#	@return text - html table
+}#
+shelfToHTML(shelf [Book]) => Text {
+	table Text <- "{
+		<table>
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Price(€)</th>
+					<th>Page Count</th>
+					<th>Author</th>
+				</tr>
+			</thead>
+		<tbody>
+		}"
+
+	for b in shelf do {
+		"${toRowHTML(b)}" ->+ table
+	}
+
+	table +<- "{
+			</tbody>
+		</table>
+		}"
+
+	=> table
+}
+
+#?{
+#	@brief Convert Book to a HTML table row
+#	@param book
+#	@return html table row
+}#
+toRowHTML(book Book) => Text {
+	=> "{
+		<tr>
+			<td>${book.title}</td>
+			<td>${book.description}</td>
+			<td>${book.price}</td>
+			<td>${book.pageCount}</td>
+			<td>${book.author.name} ${book.author.surname} ${book.author.age}</td>
+		</tr>
+		}"
+}
+
+
+
+author1 Author <- <"Simone" "Vicinanza" 22n>
+author2 Author <- <"Mario" "Rossi" 35n>
+shelf [Book] <- [
+	Book.<
+		title: "Giovi for dummies"
+		description: "A book describing very easily the Giovi"
+		author: author1
+		price: 0.0
+		pageCount: 69n
+	>
+
+	Book.<
+		title: "How to make a new Language"
+		description: "{
+			A step by step guide on how to build a new language from scratch
+			It even has pictures!!!
+			}"
+		author: author2
+		price: 6.9
+		pageCount: 420n
+	>
+
+	Book.<
+		title: "How to make a new Language | 2 edition"
+		description: "{
+			A step by step guide on how to build a new language from scratch
+			It even has pictures!!!
+			Revisioned edition
+			}"
+		author: author2
+		price: 4.2
+		pageCount: 690n
+	>
+
+	Book.<
+		title: "Story of a bored programmer"
+		description: "Biography of a bored programmer"
+		author: <
+				name:"Luigi"
+				surname: "Bianchi"
+				age: 55n
+		>
+		price: 10.5
+		pageCount: 120n
+	>
+]
+
+# shelfToText(shelf) -> \out
+shelfToHTML(shelf) -> \out
