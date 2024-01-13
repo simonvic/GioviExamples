@@ -1,0 +1,12 @@
+# GioviSpecs 0.32.1
+
+fizzbuzz(i Int) => Text {
+	output Text
+	if i % 3 = 0 do "fizz" ->+ output
+	if i % 5 = 0 do "buzz" ->+ output
+	if output = default do "$i" ->+ output
+	=> output
+}
+
+for i in 1..15 do fizzbuzz(i) -> \out
+
