@@ -1,0 +1,8 @@
+"Backslash: (\\)" -> \out
+"Space: (\s)" -> \out
+"New line: (\n)" -> \out
+"Tab: (\t)" -> \out
+"Formfeed: (\f)" -> \out
+"Backspace: (\b)" -> \out
+"Return: (\r)" -> \out
+"Unicode 4269: (\u4269)" -> \out
