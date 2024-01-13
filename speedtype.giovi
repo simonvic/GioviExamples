@@ -1,0 +1,20 @@
+# GioviSpecs 0.31.1
+
+"Insert space separated words: " ->+ \out
+\in -> line Text
+for i in 3..1 do {
+	"Get ready in $i...\r" ->+ \out
+	for i in 0..0x1fffff do {}
+}
+"" -> \out
+line / " " -> words [Text]
+correct Int <- 0
+for word in words do {
+	"$word\r" ->+ \out
+	\in -> input Text
+	if input = word
+		do correct +<- 1
+		else "> $input\tWRONG ($word)" -> \out
+}
+
+"Result: ($correct / $words@%) ${correct / words@% * 100}%" -> \out
