@@ -1,0 +1,87 @@
+# GioviSpecs 0.31.1
+
+constant COST_MISMATCH_VOWEL_CONSONANT Int <- 7
+constant COST_MISMATCH_VOWEL_VOWEL Int <- 3
+constant COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
+constant COST_GAP Int <- 5
+
+#?{
+# Check if character is a vowel
+# @param c Text
+#	@pre c is a single character
+# @return true if c is vowel, false otherwise
+}#
+isVowel(c Text) => Bool {
+	=> c ~= "AEIOUaeiou"
+}
+
+#?{
+# Get the mismatch cost between two characters
+# @param c1 Text
+#	@pre c1 is a single character
+# @param c2 Text
+#	@pre c2 is a single character
+# @return mismatch cost
+}#
+getMismatchCost(c1 Text, c2 Text) => Int {
+	if c1 = c2 do => 0
+	if isVowel(c1)
+		do if isVowel(c2)
+			do => COST_MISMATCH_VOWEL_VOWEL
+			else => COST_MISMATCH_VOWEL_CONSONANT
+		else if isVowel(c2)
+			do => COST_MISMATCH_VOWEL_CONSONANT 
+			else => COST_MISMATCH_CONSONANT_CONSONANT;
+}
+
+#?{
+# Get the minimum between three integers
+# @param a Int
+# @param b Int
+# @param c Int
+# @return minimum between a b and c
+}#
+min(a Int, b Int, c Int) => Int {
+	min Int <- a
+	if b < min do min <- b
+	if c < min do min <- c
+	=> min
+}
+
+#?{
+# Compute sequence alignment
+# @param x Text
+# @param y Text
+# @return mismatch cost
+}#
+sequenceAlignment(x Text, y Text) => Int {
+	m Int <- x@%
+	n Int <- y@%
+	matrix [[Int ** n] ** m]
+	for i in 0..m - 1 do matrix@i@0 <- i * COST_GAP
+	for j in 0..n - 1 do matrix@0@j <- j * COST_GAP
+	for i in 1..m - 1 do
+		for j in 1..n - 1 do
+			matrix@i@j <- min(
+				getMismatchCost(x@i, y@j) + matrix@{i - 1}@{j - 1},
+				COST_GAP + matrix@{i - 1}@j,
+				COST_GAP + matrix@i@{j - 1},
+			)
+	"------" -> \out
+	for i in 0..m - 1 do matrix@i -> \out
+	"------" -> \out
+	=> matrix@{m-1}@{n-1}
+}
+
+
+"{
+COST_MISMATCH_VOWEL_CONSONANT     7
+COST_MISMATCH_VOWEL_VOWEL         3
+COST_MISMATCH_CONSONANT_CONSONANT 4
+COST_GAP                          5
+}" -> \out
+"Insert first string: " ->+ \out
+\in -> x Text
+"Insert second string: " ->+ \out
+\in -> y Text
+"Mismatch cost between '$x' and '$y' is ${sequenceAlignment(x, y)}" -> \out
