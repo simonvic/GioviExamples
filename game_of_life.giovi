@@ -1,0 +1,93 @@
+# GioviSpecs 0.31.1
+
+print(state [[Int]]) {
+	for row in state do {
+		for cell in row do {
+			if cell = 1
+				do "⬜" ->+ \out
+				else "⬛" ->+ \out
+		}
+		"" -> \out
+	}
+}
+
+constant DIRS [[Int]] <- [
+	[-1, -1]
+	[-1, 0]
+	[-1, 1]
+	[0, 1]
+	[1, 1]
+	[1, 0]
+	[1, -1]
+	[0, -1]
+]
+
+countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
+	count Int
+	for dir in DIRS do {
+		rowDir Int <- dir@0
+		colDir Int <- dir@1
+		neighbourRowIdx Int <- rowIdx + rowDir
+		if neighbourRowIdx {
+			< 0 | >= state@% do skip
+		}
+		neighbourColIdx Int <- colIdx + colDir
+		if neighbourColIdx {
+			< 0 | >= state@neighbourRowIdx@% do skip
+		}
+
+		if state@neighbourRowIdx@neighbourColIdx = 1 do {
+			1 ->+ count
+		}
+
+	}
+	=> count
+}
+
+update(state [[Int]]) => [[Int]] {
+	out [[Int]] <- state
+	for rowIdx in state@@ do {
+		state@rowIdx -> row [Int]
+		for colIdx in row@@ do {
+			countNeighbours(rowIdx, colIdx, state) -> count Int
+			if count {
+				= 3 do out@rowIdx@colIdx <- 1
+				< 2 | >= 4 do out@rowIdx@colIdx <- 0
+			}
+		}
+	}
+	=> out
+}
+
+tick(state [[Int]]) {
+	"-" * 80 -> \out
+	print(state)
+	update(state) -> state
+}
+
+state [[Int]] <- [
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0]
+	[0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+	[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+]
+
+for i in 0..1000 do {
+	tick(state)
+}
+
+# repeat {
+# 	for i in 0..0xffff do {}
+# 	tick()
+# }
