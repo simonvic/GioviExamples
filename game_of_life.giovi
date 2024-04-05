@@ -10,19 +10,21 @@ constant LIFE_STAGES [Text] <- [
 ]
 
 print(state [[Int]]) {
+	output Text
 	for row in state do {
 		for cell in row do {
 			if cell {
-				<= 0 do LIFE_STAGES@0 ->+ \out
-				>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1}->+ \out
-				=  1 when USE_GRADIENTS do LIFE_STAGES@1->+ \out
-				=  2 when USE_GRADIENTS do LIFE_STAGES@2->+ \out
-				=  3 when USE_GRADIENTS do LIFE_STAGES@3->+ \out
-				>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1}->+ \out
+				<= 0 do LIFE_STAGES@0 ->+ output
+				>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
+				=  1 when USE_GRADIENTS do LIFE_STAGES@1 ->+ output
+				=  2 when USE_GRADIENTS do LIFE_STAGES@2 ->+ output
+				=  3 when USE_GRADIENTS do LIFE_STAGES@3 ->+ output
+				>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
 			}
 		}
-		"" -> \out
+		"\n" ->+ output
 	}
+	output -> \out
 }
 
 constant DIRS [[Int]] <- [
