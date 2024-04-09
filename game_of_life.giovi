@@ -218,12 +218,23 @@ constant PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
+	"t13stable" : [
+		[0 0 0 0 1 1]
+		[0 1 1 0 0 1]
+		[0 0 1 1 1 0]
+		[0 0 0 1 0 0]
+		[0 0 1 0 0 0]
+		[0 0 0 0 0 0]
+	]
+
 ]
 
-"Welcome to Konway's game of life implementation in Giovi!" -> \out
+################################################################################
+
+"Welcome to Conway's game of life implementation in Giovi!" -> \out
 "Choose a preset:" -> \out
 for preset in PRESETS@@ do {
-	"\t- $preset" -> \out
+	"$preset" -> \out
 	toBraille(PRESETS@preset) -> \out
 }
 
@@ -234,12 +245,18 @@ repeat {
 	if PRESETS =~ preset do break
 	"Sorry, the preset $preset is not available. Choose another" -> \out
 }
+currentGen [[Int]] <- PRESETS@preset
 
-state [[Int]] <- PRESETS@preset
-
-for i in 0..1000 do {
+i Int
+repeat {
 	"-" * 80 ->+ \out
-	"Gen: #$i" -> \out
-	toText(state) -> \out
-	update(state) -> state
+	"Generation: #$i" -> \out
+	toText(currentGen) -> \out
+	update(currentGen) -> nextGen [[Int]]
+	if nextGen = currentGen do {
+		"Life has stabilized after $i generations" -> \out
+		break
+	}
+	currentGen <- nextGen
+	i +<- 1
 }
