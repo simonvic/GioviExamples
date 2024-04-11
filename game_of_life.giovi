@@ -11,7 +11,7 @@ constant LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 # Each braille character has its own binary representation https://en.wikipedia.org/wiki/Braille_ASCII
 # which here is represented by the index in the string
 # For example the character ⠬ is at index 13 which in binary corresponds to 00001101
-constant CODEX Text <- " ⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
+constant CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
 
 #? Directions to use when checking for neighbours
 constant DIRS [[Int]] <- [
