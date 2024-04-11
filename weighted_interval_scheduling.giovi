@@ -1,0 +1,208 @@
+# GioviSpecs 0.36
+
+Job <
+	name Text #? Identifier of job
+	start Int #? Start time of job
+	finish Int #? End time of job
+	value Real #? Value of job
+>
+
+#?
+# Check if two jobs schedules are overlapping
+# @param j1 job
+#	@pre j1.start >= j2.start
+# @param j2 job
+#	@pre j2.start < j1.start
+# @return true if they're overlapping, false otherwise
+areOverlapping(j1 Job, j2 Job) => Bool {
+	# => j1.start ~= 0..10
+	=> j1.start < j2.finish
+}
+
+#?
+# Find the index of the first non-overlapping job
+# @param jobIndex index of the job to find a compatible job of
+# @param jobs
+#	@pre sorted by increasing finish time
+# @return index of compatible job, -1 if none are compatible
+p(jobIndex Int, jobs [Job]) => Int {
+	if jobIndex < 1 do return -1
+	for index in jobIndex - 1 .. 0 do {
+		if not areOverlapping(jobs@jobIndex, jobs@index) do {
+			return index
+		}
+	}
+	return -1
+}
+
+#?
+# Sort the jobs by increasing finish time
+# @param jobs
+# @return sorted jobs
+sortByFinishTimeInc(jobs [Job]) => [Job] {
+	sorted [Job]
+	repeat if jobs@% != 0 {
+		max Job <- jobs@0
+		for job in jobs do {
+			if job.finish < max.finish do {
+				job -> max
+			}
+		}
+		max ->- jobs
+		max ->+ sorted
+	}
+	=> sorted
+}
+
+# TODO: eh... no overloading yet
+max(x Int, y Int) => Int { if x > y do => x else => y }
+maxValue(x Real, y Real) => Real { if x > y do => x else => y }
+
+#?
+# Pretty print of job schedules
+# @param jobs
+drawJobs(jobs [Job]) {
+	maxFinishTime Int
+	for j in jobs do if j.finish > maxFinishTime do maxFinishTime <- j.finish
+	txt Text
+	for j in jobs do {
+		length Int <- j.finish - j.start
+		txt +<- " " * {j.start - 1}
+		txt +<- "├"
+		txt +<- "─" * max(length - 1, 0)
+		txt +<- "┤"
+		txt +<- " " * {maxFinishTime - j.finish}
+		txt +<- "${j.name} ${j.value}\t$j\n"
+	}
+	txt -> \out
+}
+
+#?
+# Compute the optimal value recursively
+# @param j index of the job
+# @return optimal value for compatible jobs with j
+optRecursive(j Int) => Real {
+	if j < 0 do {
+		=> 0d
+	} else {
+		=> maxValue(
+			jobs@j.value + optRecursive(pCache@j),
+			optRecursive(j - 1)
+		)
+	}
+}
+
+#? Memoization table for the opt values
+# We use a map for the sake of redeability
+memo [Int : Real] <- [-1 : 0]
+
+#?
+# Compute the optimal value recursively with the help of memoization
+# @param j index of the job
+# @return optimal value for compatible jobs with j
+optMemo(j Int) => Real {
+	if memo =~ j do => memo@j
+	memo +<- [
+		j : maxValue(
+			jobs@j.value + optMemo(pCache@j),
+			optMemo(j - 1)
+		)
+	]
+	=> memo@j
+}
+
+#?
+# Compute the optimal value iteratively with the help of memoization
+# @param j index of the job
+# @return optimal value for compatible jobs with j
+optMemoIter(j Int) => Real {
+	#? Memoization table for the opt values. We use a map for the sake of redeability
+	[-1 : 0] -> memo [Int : Real]
+	for i in jobs@@ do memo +<- [
+		i : maxValue(
+			jobs@i.value + memo@{pCache@i},
+			memo@{i - 1}
+		)
+	]
+	=> memo@j
+}
+
+#?
+# Find the optimal scheduling
+# @param jobs
+# @return optimal scheduling
+solve(jobs [Job]) => [Job] {
+	#? Memoization table for the opt values. We use a map for the sake of redeability
+	[-1 : 0] -> memo [Int : Real]
+	for i in jobs@@ do memo +<- [
+		i : maxValue(
+			jobs@i.value + memo@{pCache@i},
+			memo@{i - 1}
+		)
+	]
+	=> findSolution(jobs@% - 1, [])
+}
+
+#?
+# PostProcess function to find solution in memoization table
+# @param j jobs index
+# @param solution list of jobs
+# @return solution
+findSolution(j Int, solution [Job]) => [Job] {
+	if j < 0 do {
+		=> solution
+	} else if jobs@j.value + memo@{pCache@j} > memo@{j - 1} do {
+		jobs@j ->+ solution
+		=> findSolution(pCache@j, solution)
+	} else {
+		=> findSolution(j - 1, solution)
+	}
+}
+
+jobs [Job] <- [
+#	 name start finish value
+	<"a"  6     8      11r>,
+	<"b"  2     4      10r>,
+	<"c"  4     7      4r>,
+	<"d"  3     7      8r>,
+	<"e"  1     5      15r>,
+	<"f"  8     10     9r>,
+	<"g"  7     9      5r>,
+	<"h"  4     11     17r>,
+	<"i"  6     13     10r>,
+	<"l"  6     8      57r>,
+	<"m"  1     6      35r>,
+	<"n"  2     9      51r>,
+	<"o"  6     9      66r>,
+	<"p"  1     10     32r>,
+	<"q"  8     16     90r>,
+	<"r"  7     11     26r>,
+	<"s"  4     9      36r>,
+	<"t"  5     12     55r>,
+	<"u"  4     14     65r>,
+	<"v"  3     7      83r>,
+	<"z"  3     8      23r>,
+]
+
+"Jobs to schedule" -> \out
+drawJobs(jobs)
+
+sortByFinishTimeInc(jobs) -> jobs
+"Sorted by increasing finish time" -> \out
+drawJobs(jobs)
+
+#? Cache of job index and p(job index)
+# We use a map for the sake of redeability
+pCache [Int : Int]
+for i in jobs@@ do pCache +<- [i : p(i, jobs)]
+
+"{
+Computing optimal value...
+optRecursive() = ${optRecursive(jobs@% - 1)}
+optMemo()      = ${optMemo(jobs@% - 1)}
+optMemoIter()  = ${optMemoIter(jobs@% - 1)}
+}" -> \out
+
+"Finding solution..." -> \out
+solve(jobs) -> solution [Job]
+drawJobs(solution)
