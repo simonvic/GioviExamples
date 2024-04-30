@@ -67,8 +67,7 @@ prettyMachine(machine Machine) => Text {
 prettyConf(conf Configuration) => Text {
 	pretty Text <- "|"
 	for t in conf.tape do "$t|" ->+ pretty
-	pretty +<- "\n "
-	pretty +<- "  " * conf.pointer + "^ ${conf.state.label}"
+	pretty +<- "\n " + "  " * conf.pointer + "^ ${conf.state.label}"
 	=> pretty
 }
 
@@ -165,11 +164,38 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 		"reject" : State.<label: "reject">,
 	]
 
+	#?
+	# f(x, y) = x - y; x,y € N0; x >= y
+	# input: w0z; w,z base 1 representation of x and y
+	# output: wz0
+	"unary_dif" : [
+		"initial" : State.<"initial", [
+			"0" : <"0" R "initial">,
+			"1" : <"1" R "initial">,
+			"_" : <"_" L "b">,
+		]>
+		"b" : State.<"b", [
+			"0" : <"0" L "accept">,
+			"1" : <"_" L "c">,
+		]>
+		"c" : State.<"c", [
+			"1" : <"1" L "c">,
+			"0" : <"0" L "d">,
+		]>
+		"d" : State.<"d", [
+			"0" : <"0" L "d">,
+			"1" : <"0" L "initial">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"unary_sum">
+machine Machine <- Machine.<states: STATES_PRESETS@"unary_dif">
 
 tape [Text] <- ["1" "1" "1" "0" "1" "1"]
+tape +<- ["_" "_" "_"]
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
 prettyMachine(machine) -> \out
