@@ -23,10 +23,31 @@ State <
 	transitions [Text : Transition]
 >
 
+#? Turing machine
 Machine <
+	#? States mapped by their label
 	states [Text : State]
 >
 
+#? Current configuration of the machine
+Configuration <
+	#? Current representation of the tape
+	tape [Text]
+
+	#? Current machine position on the tape
+	pointer Int
+
+	#? Position of the first non-significant part of the tape
+	nonSignificantPointer Int
+
+	#? Current machine state
+	state State
+>
+
+#?
+# Pretty print of a machine
+# @param machine
+# @return pretty text
 prettyMachine(machine Machine) => Text {
 	"=== Machine\n" -> pretty Text
 	for label : state in machine.states do {
@@ -39,13 +60,10 @@ prettyMachine(machine Machine) => Text {
 	=> pretty
 }
 
-Configuration <
-	tape [Text]
-	pointer Int
-	nonSignificantPointer Int
-	state State
->
-
+#?
+# Pretty print of a machine configuration
+# @param machine
+# @return pretty text
 prettyConf(conf Configuration) => Text {
 	pretty Text <- "|"
 	for t in conf.tape do "$t|" ->+ pretty
@@ -54,6 +72,11 @@ prettyConf(conf Configuration) => Text {
 	=> pretty
 }
 
+#?
+# Perform a computational pass
+# @param machine
+# @param current configuration
+# @return new configuration
 produce(machine Machine, conf Configuration) => Configuration {
 	# read tape
 	input Text
@@ -65,7 +88,16 @@ produce(machine Machine, conf Configuration) => Configuration {
 	}
 
 	# find transition
-	transition Transition <- conf.state.transitions@input
+	transition Transition
+	if conf.state.transitions =~ input do {
+		transition <- conf.state.transitions@input
+	} else {
+		transition <- Transition.<
+			output: input,
+			direction: L,
+			newStateLabel: "reject"
+		>
+	}
 
 
 	# update tape
@@ -85,28 +117,63 @@ produce(machine Machine, conf Configuration) => Configuration {
 
 ################################################################################
 
-machine Machine <- Machine.<
-	states: [
+constant STATES_PRESETS [Text : [Text : State]] <- [
+
+	"bitflip" : [
 		"initial" : State.<"initial", [
 			"0" : <"1" R "initial">,
 			"1" : <"0" R "initial">,
 			"_" : <"_" L "q1">,
 		]>
 		"q1" : State.<"q1", [
-			"0" : <"0", L, "accept">,
-			"1" : <"1", L, "accept">,
-			"_" : <"_", L, "accept">,
+			"0" : <"0" L "accept">,
+			"1" : <"1" L "accept">,
+			"_" : <"_" L "accept">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	],
+
+	#?
+	# f(x, y) = x + y; x,y € N0;
+	# input: w0z; w,z base 1 representation of x and y
+	# output: wz0
+	"unary_sum" : [
+		"initial" : State.<"initial", [
+			"1" : <"_" R "q1">,
+		]>
+		"q1" : State.<"q1", [
+			"1" : <"1" R "q1">,
+			"0" : <"1" R "q2">,
+		]>
+		"q2" : State.<"q2", [
+			"1" : <"1" R "q2">,
+			"_" : <"_" L "q3">,
+		]>
+		"q3" : State.<"q3", [
+			"1" : <"0" L "q4">,
+		]>
+		"q4" : State.<"q4", [
+			"1" : <"1" L "q4">,
+			"_" : <"1" R "q5">,
+		]>
+		"q5" : State.<"q5", [
+			"1" : <"1" L "accept">,
+			"0" : <"0" L "accept">,
 		]>
 		"accept" : State.<label: "accept">,
 		"reject" : State.<label: "reject">,
 	]
->
+
+]
+
+machine Machine <- Machine.<states: STATES_PRESETS@"unary_sum">
+
+tape [Text] <- ["1" "1" "1" "0" "1" "1"]
+configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
 prettyMachine(machine) -> \out
 "=== Computing" -> \out
-
-tape [Text] <- ["1" "0" "1" "0" "1" "0" "1" "0" "1" "0"]
-configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 prettyConf(configuration) -> \out
 repeat {
 	produce(machine, configuration) -> configuration
