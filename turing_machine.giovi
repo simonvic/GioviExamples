@@ -1,0 +1,125 @@
+#? Directions
+constant R Text <- "R"
+constant L Text <- "L"
+
+#? Describe the transition between TM states
+Transition <
+	#? Value to write on tape
+	output Text
+
+	#? Move direction
+	direction Text
+
+	#? Label of the state after transitioning
+	newStateLabel Text
+>
+
+#? A TM state
+State <
+	label Text
+
+	#? Exiting edges from the state based on the input mapped to a transition
+	#           input : transition
+	transitions [Text : Transition]
+>
+
+Machine <
+	states [Text : State]
+>
+
+prettyMachine(machine Machine) => Text {
+	"=== Machine\n" -> pretty Text
+	for label : state in machine.states do {
+		"- $label\n" ->+ pretty
+		for input : transition in state.transitions do {
+			"|--($input -> ${transition.output},${transition.direction})--> ${transition.newStateLabel}\n" ->+ pretty
+		}
+		"\n" ->+ pretty
+	}
+	=> pretty
+}
+
+Configuration <
+	tape [Text]
+	pointer Int
+	nonSignificantPointer Int
+	state State
+>
+
+prettyConf(conf Configuration) => Text {
+	pretty Text <- "|"
+	for t in conf.tape do "$t|" ->+ pretty
+	pretty +<- "\n "
+	pretty +<- "  " * conf.pointer + "^ ${conf.state.label}"
+	=> pretty
+}
+
+produce(machine Machine, conf Configuration) => Configuration {
+	# read tape
+	input Text
+	if conf.pointer >= conf.nonSignificantPointer do {
+		"_" ->+ conf.tape
+		input <- "_"
+	} else {
+		input <- conf.tape@{conf.pointer}
+	}
+
+	# find transition
+	transition Transition <- conf.state.transitions@input
+
+
+	# update tape
+	newTape [Text] <- conf.tape
+	newTape@{conf.pointer} <- transition.output
+
+	# move
+	newPointer Int <- conf.pointer
+	if transition.direction {
+		= R do 1 ->+ newPointer
+		= L when newPointer >= 1 do 1 ->- newPointer
+	}
+
+	newState State <- machine.states@{transition.newStateLabel}
+	=> Configuration.<newTape, newPointer, newTape@% , newState>
+}
+
+################################################################################
+
+machine Machine <- Machine.<
+	states: [
+		"initial" : State.<"initial", [
+			"0" : <"1" R "initial">,
+			"1" : <"0" R "initial">,
+			"_" : <"_" L "q1">,
+		]>
+		"q1" : State.<"q1", [
+			"0" : <"0", L, "accept">,
+			"1" : <"1", L, "accept">,
+			"_" : <"_", L, "accept">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+>
+
+prettyMachine(machine) -> \out
+"=== Computing" -> \out
+
+tape [Text] <- ["1" "0" "1" "0" "1" "0" "1" "0" "1" "0"]
+configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
+prettyConf(configuration) -> \out
+repeat {
+	produce(machine, configuration) -> configuration
+	"" -> \out
+	prettyConf(configuration) -> \out
+	if configuration.state.label {
+		= "accept" do {
+			"accepted" -> \out
+			break
+		}
+		= "reject" do {
+			"rejected" -> \out
+			break
+		}
+	}
+}
