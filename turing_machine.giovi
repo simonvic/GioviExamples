@@ -67,7 +67,8 @@ prettyMachine(machine Machine) => Text {
 prettyConf(conf Configuration) => Text {
 	pretty Text <- "|"
 	for t in conf.tape do "$t|" ->+ pretty
-	pretty +<- "\n " + "  " * conf.pointer + "^ ${conf.state.label}"
+	pretty +<- "\n " + "  " * conf.pointer + "^"
+	pretty +<- "\n " + "  " * conf.pointer + "${conf.state.label}"
 	=> pretty
 }
 
