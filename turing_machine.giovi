@@ -191,12 +191,36 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 		"reject" : State.<label: "reject">,
 	]
 
+	#? Right bitshift
+	"bitshift_right" : [
+		"initial" : State.<"initial", [
+			"0" : <"0" R "initial">,
+			"1" : <"1" R "initial">,
+			"_" : <"_" L "b">,
+		]>
+		"b" : State.<"b", [
+			"0" : <"_" R "c">,
+			"1" : <"_" R "d">,
+			"_" : <"0" L "accept">,
+		]>
+		"c" : State.<"c", [
+			"_" : <"0" L "e">,
+		]>
+		"d" : State.<"d", [
+			"_" : <"1" L "e">,
+		]>
+		"e" : State.<"e", [
+			"_" : <"_" L "b">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"unary_dif">
+machine Machine <- Machine.<states: STATES_PRESETS@"bitshift_right">
 
-tape [Text] <- ["1" "1" "1" "0" "1" "1"]
-tape +<- ["_" "_" "_"]
+tape [Text] <- "1010111" / ""
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
 prettyMachine(machine) -> \out
