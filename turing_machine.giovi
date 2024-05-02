@@ -216,11 +216,53 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 		"reject" : State.<label: "reject">,
 	]
 
+	#? Increase by one
+	"bit_increment" : [
+		"initial" : State.<"initial", [
+			"0" : <"0" R "initial">,
+			"1" : <"1" R "initial">,
+			"_" : <"_" L "b">,
+		]>
+		"b" : State.<"b", [
+			"1" : <"1" L "b">,
+			"0" : <"1" R "c">,
+		]>
+		"c" : State.<"c", [
+			"0" : <"0" R "c">,
+			"1" : <"0" R "c">,
+			"_" : <"_" L "accept">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+
+	#? Indefinitely increase by one
+	"bit_counter" : [
+		"initial" : State.<"initial", [
+			"0" : <"0" R "initial">,
+			"1" : <"1" R "initial">,
+			"_" : <"_" L "b">,
+		]>
+		"b" : State.<"b", [
+			"1" : <"1" L "b">,
+			"0" : <"1" R "c">,
+		]>
+		"c" : State.<"c", [
+			"0" : <"0" R "c">,
+			"1" : <"0" R "c">,
+			"_" : <"_" L "b">,
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+
+	# 0b000011001
+
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"bitshift_right">
+machine Machine <- Machine.<states: STATES_PRESETS@"bit_increment">
 
-tape [Text] <- "1010111" / ""
+tape [Text] <- "1010101" / ""
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
 prettyMachine(machine) -> \out
