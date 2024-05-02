@@ -17,4 +17,4 @@ for word in words do {
 		else "> $input\tWRONG ($word)" -> \out
 }
 
-"Result: ($correct / $words@%) ${correct / words@% * 100}%" -> \out
+"Result: ($correct / ${words@%}) ${correct / words@% * 100}%" -> \out
