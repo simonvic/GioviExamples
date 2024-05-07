@@ -1,4 +1,4 @@
-# GioviSpecs 0.32.1
+# GioviSpecs 0.37
 
 Author <
 	name Text
@@ -124,8 +124,8 @@ shelf [Book] <- [
 	Book.<
 		title: "Story of a bored programmer"
 		description: "Biography of a bored programmer"
-		author: <
-				name:"Luigi"
+		author: Author.<
+				name: "Luigi"
 				surname: "Bianchi"
 				age: 55n
 		>

@@ -1,4 +1,4 @@
-# GioviSpecs 0.36
+# GioviSpecs 0.37
 
 Job <
 	name Text #? Identifier of job
@@ -67,11 +67,11 @@ drawJobs(jobs [Job]) {
 	txt Text
 	for j in jobs do {
 		length Int <- j.finish - j.start
-		txt +<- " " * {j.start - 1}
+		txt +<- " "^{j.start - 1}
 		txt +<- "├"
-		txt +<- "─" * max(length - 1, 0)
+		txt +<- "─"^max(length - 1, 0)
 		txt +<- "┤"
-		txt +<- " " * {maxFinishTime - j.finish}
+		txt +<- " "^{maxFinishTime - j.finish}
 		txt +<- "${j.name} ${j.value}\t$j\n"
 	}
 	txt -> \out

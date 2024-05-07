@@ -1,4 +1,4 @@
-# GioviSpecs 0.36
+# GioviSpecs 0.37
 
 #? When enabled, gradient life stages will be used.
 constant USE_GRADIENTS Bool <- true
@@ -249,7 +249,7 @@ currentGen [[Int]] <- PRESETS@preset
 
 i Int
 repeat {
-	"-" * 80 ->+ \out
+	"-"^80 ->+ \out
 	"Generation: #$i" -> \out
 	toText(currentGen) -> \out
 	update(currentGen) -> nextGen [[Int]]

@@ -1,3 +1,5 @@
+# GioviSpecs 0.37
+
 #? Directions
 constant R Text <- "R"
 constant L Text <- "L"
@@ -67,8 +69,8 @@ prettyMachine(machine Machine) => Text {
 prettyConf(conf Configuration) => Text {
 	pretty Text <- "|"
 	for t in conf.tape do "$t|" ->+ pretty
-	pretty +<- "\n " + "  " * conf.pointer + "^"
-	pretty +<- "\n " + "  " * conf.pointer + "${conf.state.label}"
+	pretty +<- "\n " + "  "^conf.pointer + "^"
+	pretty +<- "\n " + "  "^conf.pointer + "${conf.state.label}"
 	=> pretty
 }
 
