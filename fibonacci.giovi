@@ -63,6 +63,23 @@ fibonacciMemoIter(n Int) => Int {
 	=> cache@{n - 1};
 }
 
+#?{
+# Iterative fibonacci with better space complexity
+# @param n = value of fibonacci to find
+# @return fibonacci sequence at n
+}#
+fibonacciBottomUpBetterSpace(n Int) => Int {
+	if n <= 1 do => n
+	x Int <- 0
+	y Int <- 1
+	for i in 2..n do {
+		temp Int <- x + y
+		x <- y
+		y <- temp
+	}
+	=> y
+}
+
 "Insert iteration count: " ->+ \out
 \in as Int -> n Int
 "Fibonacci of $n will be computed" -> \out
@@ -76,6 +93,7 @@ repeat {
 		3) iterative (memoization via associative array)
 		4) iterative (memoization via array)
 		5) golden ratio
+		6) bottom up improved space
 	> }" ->+ \out
 	\in -> algorithm Text
 	if algorithm {
@@ -85,6 +103,7 @@ repeat {
 		= "3" do "fibonacciAssociativeMemoIter($n) => ${fibonacciAssociativeMemoIter(n)}"  -> \out
 		= "4" do "fibonacciMemoIter($n) => ${fibonacciMemoIter(n)}" -> \out
 		= "5" do "fibonacciGoldenRatio($n) => ${fibonacciGoldenRatio(n)}" -> \out
+		= "6" do "fibonacciBottomUpBetterSpace($n) => ${fibonacciBottomUpBetterSpace(n)}" -> \out
 	} else default -> algorithm 
 	if algorithm != default do break
 	"Invalid algorithm" -> \out
