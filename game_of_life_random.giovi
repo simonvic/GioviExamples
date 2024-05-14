@@ -1,6 +1,13 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.38
 
 # head -n 200 /dev/urandom | tr -dc '[:alnum:]' | giovi game_of_life_random.giovi
+
+#? When enabled, ansi escape codes will be used to redraw the output
+constant REDRAW Bool <- true
+
+esc Text <- "\u001B"
+ansiMove(column Int, line Int)  { \out +<- "$esc[$line;${column}H"}
+ansiErase(mode Int)             { \out +<- "$esc[${mode}J"}
 
 #? When enabled, gradient life stages will be used.
 constant USE_GRADIENTS Bool <- true
@@ -10,8 +17,9 @@ constant LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 
 #?
 # Codex for traslating a 3x2 matrix into a braille character.
-# Each braille character has its own binary representation https://en.wikipedia.org/wiki/Braille_ASCII
-# which here is represented by the index in the string
+# Each braille character has its own binary representation
+# https://en.wikipedia.org/wiki/Braille_ASCII which here is represented by the
+# index in the string
 # For example the character ⠬ is at index 13 which in binary corresponds to 00001101
 constant CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
 
@@ -156,8 +164,14 @@ repeat if numbers@% > size {
 }
 
 for row in currentGen do row -> \out
+"Starting generation:" -> \out
+toBraille(currentGen) -> \out
+toText(currentGen) -> \out
+
 i Int
+if REDRAW do ansiErase(2)
 repeat {
+	if REDRAW do ansiMove(0, 0)
 	"-"^80 ->+ \out
 	"Generation: #$i" -> \out
 	toText(currentGen) -> \out
@@ -169,3 +183,4 @@ repeat {
 	currentGen <- nextGen
 	i +<- 1
 }
+
