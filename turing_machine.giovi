@@ -3,6 +3,7 @@
 #? Directions
 constant R Text <- "R"
 constant L Text <- "L"
+constant S Text <- "S"
 
 #? Describe the transition between TM states
 Transition <
@@ -96,7 +97,7 @@ produce(machine Machine, conf Configuration) => Configuration {
 	} else {
 		transition <- Transition.<
 			output: input,
-			direction: L,
+			direction: S,
 			newStateLabel: "reject"
 		>
 	}
@@ -258,7 +259,6 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 		"reject" : State.<label: "reject">,
 	]
 
-	# 0b000011001
 
 ]
 
