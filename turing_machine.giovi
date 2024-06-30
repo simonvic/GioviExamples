@@ -1,5 +1,13 @@
 # GioviSpecs 0.37
 
+
+#? When enabled, ansi escape codes will be used to redraw the output
+constant REDRAW Bool <- true
+
+esc Text <- "\u001B"
+ansiMove(column Int, line Int)  { \out +<- "$esc[$line;${column}H"}
+ansiErase(mode Int)             { \out +<- "$esc[${mode}J"}
+
 #? Directions
 constant R Text <- "R"
 constant L Text <- "L"
@@ -271,6 +279,10 @@ prettyMachine(machine) -> \out
 "=== Computing" -> \out
 prettyConf(configuration) -> \out
 repeat {
+	if REDRAW do {
+		ansiErase(2)
+		ansiMove(0, 0)
+	}
 	produce(machine, configuration) -> configuration
 	"" -> \out
 	prettyConf(configuration) -> \out
