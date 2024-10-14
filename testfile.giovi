@@ -1,0 +1,231 @@
+# GioviSpecs 0.41
+
+# This is a file for testing syntax highlighting, folds and indentations
+
+################################################################################ Comments and docs
+
+# comment
+#{
+comment
+block
+}#
+
+#? awfawf
+#?{
+doc
+block
+}#
+
+#?{
+	This function computes the sum of two numbers
+	@param x Int
+	@param y Int
+	@return x + y
+	@code sum(2, 3) -> \out
+}#
+sum(x Int, y Int) => Int {
+	=> x + y
+}
+
+################################################################################ Primitives
+
+i Int default 69
+n Natural default 69n
+r Real default 6.9
+b Bool default true
+t Text default "hello world"
+l [Int] default [0..9]
+m [Text:Int] default ["a":0]
+
+\out <- \in
+\out <- default
+\out <- _
+
+ai [Int] <- [
+	69 69i
+	0xFFFFFF # hex
+	0o777 # octal
+	0b1000_1000_0101 # binary
+]
+
+ar [Real] <- [
+	6.9 69r
+	1e+10 1e-10 1e10 # exponent notation
+	0x1e10p69 # hex exponent
+]
+
+at [Text] <- [
+	"text",
+	"{
+	this is a "text block"
+	escape sequences:
+		\\ \b \t \n \f \r \s \uFFFF 😀
+	interpolation:
+		$foo
+		${foo}
+		${a + FOO}
+	}",
+	'exact text',
+	'{
+	this is a 'exact text block'
+	escape sequences:
+		\\ \b \t \n \f \r \s \uFFFF 😀
+	}',
+]
+
+maps [Text : Int] <- [
+	"a" : 69
+	"b" : 420
+]
+
+################################################################################ Tuples and structs
+
+Color <
+	r Int
+	g Int
+	b Int
+>
+
+Color : ColorRGBA <a Int>
+
+=> <a {b<c} d>
+=> <a:a b:b c:c>
+=> Color.<>
+
+Car <
+	paint Color default <r:255 g:255 b:255>
+	engine Engine
+	fuel Real
+	isOn Bool
+
+	Engine <
+		kw Int
+		fuelType Text
+	>
+
+	getPaintRGBA(car Car) => ColorRGBA {
+		=> ColorRGBA.<r:car.paint.r g:car.paint.g b:car.paint.b>
+	}
+
+	turnOn(car Car) {
+		car.isOn <- true
+	}
+
+>
+
+################################################################################ Functions
+
+sum(x Int, y Int) => Int { => x + y }
+foo() => Int { return "hello world" }
+foo(
+a Int default 69,
+b Int default 69,
+c Int default 69,
+d Int default 69,
+) {
+}
+
+sum(69, _)
+
+f ::()
+f ::(a Int)
+f ::(a Int, b Int)
+f ::() => Int
+f ::(a Int) => Int
+f ::(a Int, b Int) => Int
+
+f <- ::{}
+f <- ::() {}
+f <- ::(a Int) {}
+f <- ::(a Int, b Int) {}
+f <- ::() => Int {}
+f <- ::(a Int) => Int {}
+f <- ::(a Int, b Int) => Int { }
+
+################################################################################ Statements
+
+constant PI Real <- 3.14r
+
+if true do {
+
+} else {
+
+}
+
+if x {
+	= 69 do {}
+	in someList do {}
+	is Real when !someCondition do {}
+	is Real do {}
+	is not Int do {}
+}
+
+repeat {}
+repeat if true {}
+repeat {
+	break
+}
+for i in 0..10 do {
+
+}
+for _ in 0..10 do skip
+for k : v in map do {}
+for k : [v : w] in map do {}
+for color <r g b> in listOfColors do {}
+
+a  <- b
+a +<- b
+a -<- b
+a *<- b
+a /<- b
+a ->  b
+a ->+ b
+a ->- b
+a ->* b
+a ->/ b
+
+################################################################################ Expressions
+
+=> !a
+=> not a
+
+=> a + b
+=> a - b
+=> a * b
+=> a / b
+=> a % b
+=> a ^ b
+=> a = b
+=> a != b
+=> {a < b} # TODO: update this
+=> a <= b
+=> a > b
+=> a >= b
+=> a and b
+=> a & b
+=> a or b
+=> a | b
+=> a in b
+=> a =~ b
+=> a ~= b
+=> a is B
+=> a@b 
+=> a.b 
+
+################################################################################ Identifiers
+
+=> a
+=> aaa
+=> aaa_aaa
+=> a9
+=> a_a9
+
+=> A
+=> AAA
+=> AAA_AAA
+=> A9
+=> A_A9
+
+=> Aa
+=> AAAa
+=> AAAa
