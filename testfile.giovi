@@ -27,6 +27,14 @@ sum(x Int, y Int) => Int {
 	=> x + y
 }
 
+# TODO: something
+# TODO(scope): something
+# INFO: something
+# NOTE: something
+# XXX: something
+# WARN: something
+# ERROR: something
+
 ################################################################################ Primitives
 
 i Int default 69
