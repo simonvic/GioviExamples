@@ -1,4 +1,4 @@
-# GioviSpecs 0.41
+# GioviSpecs 0.50
 
 # This is a file for testing syntax highlighting, folds and indentations
 
@@ -21,7 +21,7 @@ block
 	@param x Int
 	@param y Int
 	@return x + y
-	@code sum(2, 3) -> \out
+	@code sum(2, 3) -> _out
 }#
 sum(x Int, y Int) => Int {
 	=> x + y
@@ -45,9 +45,9 @@ t Text default "hello world"
 l [Int] default [0..9]
 m [Text:Int] default ["a":0]
 
-\out <- \in
-\out <- default
-\out <- _
+_out <- _in
+_out <- default
+_out <- _
 
 ai [Int] <- [
 	69 69i
@@ -112,11 +112,20 @@ Car <
 	>
 
 	getPaintRGBA(car Car) => ColorRGBA {
-		=> ColorRGBA.<r:car.paint.r g:car.paint.g b:car.paint.b>
+		=> ColorRGBA.<
+			r: car.paint.r
+			g: car.paint.g
+			b: car.paint.b
+		>
 	}
 
-	turnOn(car Car) {
-		car.isOn <- true
+	self turnOn() {
+		self.isOn <- true
+	}
+
+	self paint(rgba ColorRGBA) => self {
+		self.paint <- rgba
+		=> self
 	}
 
 >
@@ -126,10 +135,10 @@ Car <
 sum(x Int, y Int) => Int { => x + y }
 foo() => Int { return "hello world" }
 foo(
-a Int default 69,
-b Int default 69,
-c Int default 69,
-d Int default 69,
+	a Int default 69,
+	b Int default 69,
+	c Int default 69,
+	d Int default 69,
 ) {
 }
 

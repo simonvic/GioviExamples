@@ -1,10 +1,10 @@
-# GioviSpecs 0.31.1
+# GioviSpecs 0.50
 
-"Backslash: (\\)" -> \out
-"Space: (\s)" -> \out
-"New line: (\n)" -> \out
-"Tab: (\t)" -> \out
-"Formfeed: (\f)" -> \out
-"Backspace: (\b)" -> \out
-"Return: (\r)" -> \out
-"Unicode 4269: (\u4269)" -> \out
+"Backslash: (\\)" -> _out
+"Space: (\s)" -> _out
+"New line: (\n)" -> _out
+"Tab: (\t)" -> _out
+"Formfeed: (\f)" -> _out
+"Backspace: (\b)" -> _out
+"Return: (\r)" -> _out
+"Unicode 4269: (\u4269)" -> _out

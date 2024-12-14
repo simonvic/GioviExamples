@@ -1,4 +1,4 @@
-# GioviSpecs 0.31.1
+# GioviSpecs 0.50
 
 #?{
 # Recursive fibonacci.
@@ -80,9 +80,9 @@ fibonacciBottomUpBetterSpace(n Int) => Int {
 	=> y
 }
 
-"Insert iteration count: " ->+ \out
-\in as Int -> n Int
-"Fibonacci of $n will be computed" -> \out
+"Insert iteration count: " ->+ _out
+_in as Int -> n Int
+"Fibonacci of $n will be computed" -> _out
 algorithm Text
 repeat {
 	"{
@@ -94,17 +94,17 @@ repeat {
 		4) iterative (memoization via array)
 		5) golden ratio
 		6) bottom up improved space
-	> }" ->+ \out
-	\in -> algorithm Text
+	> }" ->+ _out
+	_in -> algorithm Text
 	if algorithm {
 		= "0" do break;
-		= "1" do "fibonacci($n) => ${fibonacci(n)}" -> \out
-		= "2" do "fibonacciBottomUp($n) => ${fibonacciBottomUp(n)}" -> \out
-		= "3" do "fibonacciAssociativeMemoIter($n) => ${fibonacciAssociativeMemoIter(n)}"  -> \out
-		= "4" do "fibonacciMemoIter($n) => ${fibonacciMemoIter(n)}" -> \out
-		= "5" do "fibonacciGoldenRatio($n) => ${fibonacciGoldenRatio(n)}" -> \out
-		= "6" do "fibonacciBottomUpBetterSpace($n) => ${fibonacciBottomUpBetterSpace(n)}" -> \out
+		= "1" do "fibonacci($n) => ${fibonacci(n)}" -> _out
+		= "2" do "fibonacciBottomUp($n) => ${fibonacciBottomUp(n)}" -> _out
+		= "3" do "fibonacciAssociativeMemoIter($n) => ${fibonacciAssociativeMemoIter(n)}"  -> _out
+		= "4" do "fibonacciMemoIter($n) => ${fibonacciMemoIter(n)}" -> _out
+		= "5" do "fibonacciGoldenRatio($n) => ${fibonacciGoldenRatio(n)}" -> _out
+		= "6" do "fibonacciBottomUpBetterSpace($n) => ${fibonacciBottomUpBetterSpace(n)}" -> _out
 	} else default -> algorithm 
 	if algorithm != default do break
-	"Invalid algorithm" -> \out
+	"Invalid algorithm" -> _out
 }

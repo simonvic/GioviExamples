@@ -1,4 +1,4 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
 Job <
 	name Text #? Identifier of job
@@ -74,7 +74,7 @@ drawJobs(jobs [Job]) {
 		txt +<- " "^{maxFinishTime - j.finish}
 		txt +<- "${j.name} ${j.value}\t$j\n"
 	}
-	txt -> \out
+	txt -> _out
 }
 
 #?
@@ -83,7 +83,7 @@ drawJobs(jobs [Job]) {
 # @return optimal value for compatible jobs with j
 optRecursive(j Int) => Real {
 	if j < 0 do {
-		=> 0d
+		=> 0r
 	} else {
 		=> maxValue(
 			jobs@j.value + optRecursive(pCache@j),
@@ -184,11 +184,11 @@ jobs [Job] <- [
 	<"z"  3     8      23r>,
 ]
 
-"Jobs to schedule" -> \out
+"Jobs to schedule" -> _out
 drawJobs(jobs)
 
 sortByFinishTimeInc(jobs) -> jobs
-"Sorted by increasing finish time" -> \out
+"Sorted by increasing finish time" -> _out
 drawJobs(jobs)
 
 #? Cache of job index and p(job index)
@@ -201,8 +201,8 @@ Computing optimal value...
 optRecursive() = ${optRecursive(jobs@% - 1)}
 optMemo()      = ${optMemo(jobs@% - 1)}
 optMemoIter()  = ${optMemoIter(jobs@% - 1)}
-}" -> \out
+}" -> _out
 
-"Finding solution..." -> \out
+"Finding solution..." -> _out
 solve(jobs) -> solution [Job]
 drawJobs(solution)

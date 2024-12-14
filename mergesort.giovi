@@ -1,4 +1,4 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
 merge(l [Int], r [Int], level Int) => [Int] {
 	merged [Int]
@@ -15,21 +15,21 @@ merge(l [Int], r [Int], level Int) => [Int] {
 	}
 	if i < l@% do for k in i..l@% - 1 do l@k ->+ merged
 	if j < r@% do for k in j..r@% - 1 do r@k ->+ merged
-	"|\t"^level + merged -> \out
+	"|\t"^level + merged -> _out
 	=> merged
 }
 
 mergesort(a [Int], level Int default 0) => [Int] {
-	"|\t"^level + a -> \out
+	"|\t"^level + a -> _out
 	if a@% = 1 do => a
 	half Int <- {a@% / 2} as Int
 	a@0..half-1 -> l [Int]
 	a@half..a@%-1 -> r [Int]
-	"|\t"^level + "$l$r" -> \out
+	"|\t"^level + "$l$r" -> _out
 	mergesort(l, level + 1) -> sortedL [Int]
 	mergesort(r, level + 1) -> sortedR [Int]
 	=> merge(sortedL, sortedR, level + 1)
 }
 
-mergesort([39 2 87 7 280 59 0 3 593 74 96 3 38 2 4 6 10 83]) -> \out
+mergesort([39 2 87 7 280 59 0 3 593 74 96 3 38 2 4 6 10 83]) -> _out
 

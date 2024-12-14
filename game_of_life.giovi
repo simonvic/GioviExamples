@@ -1,4 +1,4 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
 #? When enabled, gradient life stages will be used.
 constant USE_GRADIENTS Bool <- true
@@ -227,34 +227,52 @@ constant PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0]
 	]
 
+	"eyes" : [
+		[0 0 0 0 0 0 0 0 0 0]
+		[0 0 1 1 1 0 0 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 0 1 1 1 0 0 0 0 0]
+		[0 0 0 0 0 0 0 0 0 0]
+		[0 0 1 1 1 0 0 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 1 0 0 0 0 1 0 0 0]
+		[0 0 1 1 1 0 0 0 0 0]
+		[0 0 0 0 0 0 0 0 0 0]
+	]
+
 ]
 
 ################################################################################
 
-"Welcome to Conway's game of life implementation in Giovi!" -> \out
-"Choose a preset:" -> \out
+"Welcome to Conway's game of life implementation in Giovi!" -> _out
+"Choose a preset:" -> _out
 for preset in PRESETS@@ do {
-	"$preset" -> \out
-	toBraille(PRESETS@preset) -> \out
+	"$preset" -> _out
+	toBraille(PRESETS@preset) -> _out
 }
 
 preset Text
 repeat {
-	"> " ->+ \out
-	\in -> preset
+	"> " ->+ _out
+	_in -> preset
 	if PRESETS =~ preset do break
-	"Sorry, the preset $preset is not available. Choose another" -> \out
+	"Sorry, the preset $preset is not available. Choose another" -> _out
 }
 currentGen [[Int]] <- PRESETS@preset
 
 i Int
+"\u001B[2J" ->+ _out
 repeat {
-	"-"^80 ->+ \out
-	"Generation: #$i" -> \out
-	toText(currentGen) -> \out
+	"\u001B[H" ->+ _out
+	"-"^80 ->+ _out
+	"Generation: #$i" -> _out
+	toText(currentGen) -> _out
 	update(currentGen) -> nextGen [[Int]]
 	if nextGen = currentGen do {
-		"Life has stabilized after $i generations" -> \out
+		"Life has stabilized after $i generations" -> _out
 		break
 	}
 	currentGen <- nextGen

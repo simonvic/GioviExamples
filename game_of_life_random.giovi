@@ -1,4 +1,4 @@
-# GioviSpecs 0.38
+# GioviSpecs 0.50
 
 # head -n 200 /dev/urandom | tr -dc '[:alnum:]' | giovi game_of_life_random.giovi
 
@@ -6,8 +6,8 @@
 constant REDRAW Bool <- true
 
 esc Text <- "\u001B"
-ansiMove(column Int, line Int)  { \out +<- "$esc[$line;${column}H"}
-ansiErase(mode Int)             { \out +<- "$esc[${mode}J"}
+ansiMove(column Int, line Int)  { _out +<- "$esc[$line;${column}H"}
+ansiErase(mode Int)             { _out +<- "$esc[${mode}J"}
 
 #? When enabled, gradient life stages will be used.
 constant USE_GRADIENTS Bool <- true
@@ -128,10 +128,8 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
 	for rowIdx in state@@ do {
-		state@rowIdx -> row [Int]
-		for colIdx in row@@ do {
-			countNeighbours(rowIdx, colIdx, state) -> count Int
-			if count {
+		for colIdx in state@rowIdx@@ do {
+			if countNeighbours(rowIdx, colIdx, state) {
 				= 3 do out@rowIdx@colIdx +<- 1
 				< 2 | >= 4 do out@rowIdx@colIdx <- 0
 			}
@@ -142,7 +140,7 @@ update(state [[Int]]) => [[Int]] {
 
 ################################################################################
 
-\in -> input Text
+_in -> input Text
 numbers Text
 for c in input@* do {
 	if c ~= "0123456789" do {
@@ -163,21 +161,21 @@ repeat if numbers@% > size {
 	numbers@size..numbers@% - 1 -> numbers
 }
 
-for row in currentGen do row -> \out
-"Starting generation:" -> \out
-toBraille(currentGen) -> \out
-toText(currentGen) -> \out
+for row in currentGen do row -> _out
+"Starting generation:" -> _out
+toBraille(currentGen) -> _out
+toText(currentGen) -> _out
 
 i Int
 if REDRAW do ansiErase(2)
 repeat {
 	if REDRAW do ansiMove(0, 0)
-	"-"^80 ->+ \out
-	"Generation: #$i" -> \out
-	toText(currentGen) -> \out
+	"-"^80 ->+ _out
+	"Generation: #$i" -> _out
+	toText(currentGen) -> _out
 	update(currentGen) -> nextGen [[Int]]
 	if nextGen = currentGen do {
-		"Life has stabilized after $i generations" -> \out
+		"Life has stabilized after $i generations" -> _out
 		break
 	}
 	currentGen <- nextGen

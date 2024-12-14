@@ -1,7 +1,7 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
 100 -> max Int
 for i in 0..max do {
 	for j in 0..0x0ffff do {} # LOLOLOLOL
-	"[" + "="^i + "-"^{max - i} + "] $i%\r" ->+ \out
+	"[" + "="^i + "-"^{max - i} + "] $i%\r" ->+ _out
 }

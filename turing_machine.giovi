@@ -1,12 +1,15 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
+
+#? When enabled, user will be prompted before proceeding with computation
+constant ITERATIVE Bool <- false
 
 #? When enabled, ansi escape codes will be used to redraw the output
 constant REDRAW Bool <- true
 
 esc Text <- "\u001B"
-ansiMove(column Int, line Int)  { \out +<- "$esc[$line;${column}H"}
-ansiErase(mode Int)             { \out +<- "$esc[${mode}J"}
+ansiMove(column Int, line Int)  { _out +<- "$esc[$line;${column}H"}
+ansiErase(mode Int)             { _out +<- "$esc[${mode}J"}
 
 #? Directions
 constant R Text <- "R"
@@ -267,32 +270,131 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 		"reject" : State.<label: "reject">,
 	]
 
+	#? #ababAbba# -> #ababaAbba#
+	#? #abababbA# -> #ababaabba°#
+	"esame" : [
+		"initial" : State.<"initial", [
+			"#" : <"#" R "initial">,
+			"a" : <"a" R "initial">,
+			"b" : <"b" R "initial">,
+			"A" : <"A" R "initial">,
+			"B" : <"B" R "initial">,
+			"_" : <"_" L "q1">,
+		]>
+		"q1" : State.<"q1", [
+			"#" : <"#" L "q2">,
+			"a" : <"a" L "q2">,
+			"b" : <"b" L "q2">,
+			"A" : <"A" L "q2">,
+			"B" : <"B" L "q2">,
+		]>
+		"q2" : State.<"q2", [
+			"A" : <"a" R "q3">
+			"B" : <"b" R "q3">
+			"a" : <"a" S "q8">
+			"b" : <"b" S "q8">
+		]>
+		"q8" : State.<"q8", [
+			"a" : <"_" R "q5">
+			"b" : <"_" R "q6">
+			"A" : <"a" R "q9">
+			"B" : <"b" R "q10">
+		]>
+		"q3" : State.<"q3", [
+			"#" : <"°" R "q4">
+		]>
+		"q4" : State.<"q4", [
+			"_" : <"#" R "accept">
+		]>
+		"q5" : State.<"q5", [
+			"#" : <"a" L "q7">
+			"_" : <"a" L "q7">
+		]>
+		"q6" : State.<"q6", [
+			"#" : <"b" L "q7">
+			"_" : <"b" L "q7">
+		]>
+		"q7" : State.<"q7", [
+			"_" : <"_" L "q8">
+		]>
+		"q9" : State.<"q9", [
+			"_" : <"A" L "q11">
+		]>
+		"q10" : State.<"q10", [
+			"_" : <"B" L "q11">
+		]>
+		"q11" : State.<"q11", [
+			"a" : <"a" R "q11">
+			"b" : <"b" R "q11">
+			"A" : <"A" R "q11">
+			"B" : <"B" R "q11">
+			"_" : <"#" S "accept">
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
+
+	"esame2" : [
+		"initial" : State.<"initial", [
+			"a" : <"a" R "initial">
+			"b" : <"X" S "q1">
+		]>
+		"q1" : State.<"q1", [
+			"X" : <"X" R "q2">
+		]>
+		"q2" : State.<"q2", [
+			"a" : <"a" R "q2">
+			"b" : <"b" R "q2">
+			"_" : <"_" L "q3">
+		]>
+		"q3" : State.<"q3", [
+			"a" : <"a" L "q4">
+			"b" : <"b" L "q4">
+			"X" : <"X" L "accept">
+		]>
+		"q4" : State.<"q4", [
+			"a" : <"a" L "q3">
+			"b" : <"b" L "q3">
+			"X" : <"X" L "q5">
+		]>
+		"q5" : State.<"q5", [
+			"a" : <"a" L "q5">
+			"b" : <"b" L "q5">
+		]>
+		"accept" : State.<label: "accept">,
+		"reject" : State.<label: "reject">,
+	]
 
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"bit_increment">
+machine Machine <- Machine.<states: STATES_PRESETS@"esame2">
 
-tape [Text] <- "1010101" / ""
+tape [Text] <- "aaabaaabbb" / ""
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
-prettyMachine(machine) -> \out
-"=== Computing" -> \out
-prettyConf(configuration) -> \out
+prettyMachine(machine) -> _out
+"=== Computing" -> _out
+prettyConf(configuration) -> _out
 repeat {
+	if ITERATIVE do {
+		"Press [Enter] to proceed" -> _out
+		_in -> _out
+	}
 	if REDRAW do {
 		ansiErase(2)
 		ansiMove(0, 0)
 	}
 	produce(machine, configuration) -> configuration
-	"" -> \out
-	prettyConf(configuration) -> \out
+	"" -> _out
+	prettyConf(configuration) -> _out
+	# for i in 0..0x05ffff do {}
 	if configuration.state.label {
 		= "accept" do {
-			"accepted" -> \out
+			"accepted" -> _out
 			break
 		}
 		= "reject" do {
-			"rejected" -> \out
+			"rejected" -> _out
 			break
 		}
 	}

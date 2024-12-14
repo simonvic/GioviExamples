@@ -1,4 +1,4 @@
-# GioviSpecs 0.31.1
+# GioviSpecs 0.50
 
 constant COST_MISMATCH_VOWEL_CONSONANT Int <- 7
 constant COST_MISMATCH_VOWEL_VOWEL Int <- 3
@@ -67,9 +67,9 @@ sequenceAlignment(x Text, y Text) => Int {
 				COST_GAP + matrix@{i - 1}@j,
 				COST_GAP + matrix@i@{j - 1},
 			)
-	"------" -> \out
-	for i in 0..m - 1 do matrix@i -> \out
-	"------" -> \out
+	"------" -> _out
+	for i in 0..m - 1 do matrix@i -> _out
+	"------" -> _out
 	=> matrix@{m-1}@{n-1}
 }
 
@@ -79,9 +79,9 @@ COST_MISMATCH_VOWEL_CONSONANT     7
 COST_MISMATCH_VOWEL_VOWEL         3
 COST_MISMATCH_CONSONANT_CONSONANT 4
 COST_GAP                          5
-}" -> \out
-"Insert first string: " ->+ \out
-\in -> x Text
-"Insert second string: " ->+ \out
-\in -> y Text
-"Mismatch cost between '$x' and '$y' is ${sequenceAlignment(x, y)}" -> \out
+}" -> _out
+"Insert first string: " ->+ _out
+_in -> x Text
+"Insert second string: " ->+ _out
+_in -> y Text
+"Mismatch cost between '$x' and '$y' is ${sequenceAlignment(x, y)}" -> _out

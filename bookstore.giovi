@@ -1,4 +1,4 @@
-# GioviSpecs 0.37
+# GioviSpecs 0.50
 
 Author <
 	name Text
@@ -134,5 +134,5 @@ shelf [Book] <- [
 	>
 ]
 
-# shelfToText(shelf) -> \out
-shelfToHTML(shelf) -> \out
+# shelfToText(shelf) -> _out
+shelfToHTML(shelf) -> _out

@@ -1,4 +1,4 @@
-# GioviSpecs 0.32.1
+# GioviSpecs 0.50
 
 fizzbuzz(i Int) => Text {
 	output Text
@@ -8,5 +8,5 @@ fizzbuzz(i Int) => Text {
 	=> output
 }
 
-for i in 1..15 do fizzbuzz(i) -> \out
+for i in 1..15 do fizzbuzz(i) -> _out
 
