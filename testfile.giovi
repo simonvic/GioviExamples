@@ -96,9 +96,12 @@ Color <
 
 Color : ColorRGBA <a Int>
 
-=> <a {b<c} d>
+=> <a b<c d>
+=> <a {b>c} d>
 => <a:a b:b c:c>
 => Color.<>
+=> Color.<1 2 3>
+=> Color.<r:1 g:2 b:3>
 
 Car <
 	paint Color default <r:255 g:255 b:255>
@@ -134,6 +137,11 @@ Car <
 
 sum(x Int, y Int) => Int { => x + y }
 foo() => Int { return "hello world" }
+bar(
+	label1: param1 Int default 69,
+	label2: param2 Int default 69,
+	label3: param3 Int default 69,
+) { }
 foo(
 	a Int default 69,
 	b Int default 69,
