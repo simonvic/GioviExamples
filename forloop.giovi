@@ -1,4 +1,4 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.55
 
 Foo<a Int, b Int, c Int>
 Bar<x Int, y Int, z Foo>
@@ -33,10 +33,10 @@ listOfStruct [Foo] <- [Foo.<1,1,1>, Foo.<2,2,2>, Foo.<3,3,3>,]
 "iterating list of Struct: $listOfStruct" -> _out
 
 "...with <a b c>" -> _out
-for <a b c> in listOfStruct do "<$a $b $c>" -> _out
+for <a, b, c> in listOfStruct do "<$a $b $c>" -> _out
 
 "...with s <a b c>" -> _out
-for s <a b c> in listOfStruct do "$s <$a $b $c>" -> _out
+for s <a, b, c> in listOfStruct do "$s <$a $b $c>" -> _out
 
 # "...with <a typed, b typed, c typed>" -> _out
 # for <a Int, b Int, c Int> in listOfStruct do "<$a $b $c>" -> _out
@@ -49,7 +49,7 @@ listOfNestedStruct [Bar] <- [Bar.<1, 1, Foo.<1, 1, 1>>, Bar.<2, 2, Foo.<2, 2, 2>
 "iterating list of nested struct: $listOfNestedStruct" -> _out
 
 "...with <x y <a b c>>" -> _out
-for <x, y, z <a b c>> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
+for <x, y, z <a, b, c>> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
 
 "-------------------------------------------------------------------------------" -> _out
 map [Text : Int] <- ["a":1 "b":2 "c":3]
@@ -78,20 +78,20 @@ mapWithStructValue [Text : Foo] <- ["a":Foo.<1,2,3>, "b":Foo.<4,5,6>, "c":Foo.<7
 "iterating map of value Struct: $mapWithStructValue" -> _out
 
 "...with k : <a b c>" -> _out
-for k : <a b c> in mapWithStructValue do "$k : <$a $b $c>" -> _out
+for k : <a, b, c> in mapWithStructValue do "$k : <$a $b $c>" -> _out
 
 "...with k : v <a b c>" -> _out
-for k : v <a b c> in mapWithStructValue do "$k : $v <$a $b $c>" -> _out
+for k : v <a, b, c> in mapWithStructValue do "$k : $v <$a $b $c>" -> _out
 
 "-------------------------------------------------------------------------------" -> _out
 mapWithStructKey [Foo : Int] <- [Foo.<1,2,3>:1, Foo.<4,5,6>:2, Foo.<7,8,9>:3]
 "iterating map of key Struct: $mapWithStructKey" -> _out
 
 "...with <a b c> : v" -> _out
-for <a b c> : v in mapWithStructKey do "<$a $b $c> : $v" -> _out
+for <a, b, c> : v in mapWithStructKey do "<$a $b $c> : $v" -> _out
 
 "...with <a b c> : v" -> _out
-for k <a b c> : v in mapWithStructKey do "$k <$a $b $c> : $v" -> _out
+for k <a, b, c> : v in mapWithStructKey do "$k <$a $b $c> : $v" -> _out
 
 "-------------------------------------------------------------------------------" -> _out
 mapWithStructPair [Foo : Bar] <- [
@@ -102,10 +102,10 @@ mapWithStructPair [Foo : Bar] <- [
 "iterating map of pair Struct: $mapWithStructPair" -> _out
 
 "...with <a b c> : <x y z>" -> _out
-for <a b c> : <x y z> in mapWithStructPair do "<$a $b $c> : <$x $y $z>" -> _out
+for <a, b, c> : <x, y, z> in mapWithStructPair do "<$a $b $c> : <$x $y $z>" -> _out
 
 "...with k <a b c> : v <x y z>" -> _out
-for k <a b c> : v <x y z> in mapWithStructPair do "$k <$a $b $c> : $v <$x $y $z>" -> _out
+for k <a, b, c> : v <x, y, z> in mapWithStructPair do "$k <$a $b $c> : $v <$x $y $z>" -> _out
 
 "-------------------------------------------------------------------------------" -> _out
 mapWithMapValue [Text : [Text : Int]] <- [
@@ -125,5 +125,6 @@ mapWithMapKey [[Text : Int] : Text] <- [
 ]
 "iterating map with key map: $mapWithMapKey" -> _out
 "...with k : v : k2" -> _out
+"THIS SHOULD FAIL (for now)" -> _out
 for k : v : k2 in mapWithMapKey do "$k : $v : $k2" -> _out
 
