@@ -1,0 +1,101 @@
+# GioviSpecs 0.55
+
+indentationToText(level Int) => Text {
+	if level <= 0 do {
+		=> "├"
+	}
+	=> "│" + " │"^{level - 1} + " ├"
+}
+
+Item <
+	value Int
+	self compare(item Item) => Int {
+		=> self.value - item.value
+	}
+>
+
+Tree <
+	label Text
+	item Item
+	left self
+	right self
+
+
+	self printRootItem(level Int, prefix Text) => Text {
+		=> indentationToText(level) + " $prefix ${self.label}: ${self.item.value} \n"
+	}
+
+	self printPreOrder(level Int, prefix Text) => Text {
+		if self.label = Tree.label do => ""
+		text Text
+		self.printRootItem(level, prefix) ->+ text
+		self.left.printPreOrder(level + 1, "[L]") ->+ text
+		self.right.printPreOrder(level + 1, "[R]") ->+ text
+		=> text
+	}
+
+	self printInOrder(level Int, prefix Text) => Text {
+		if self.label = Tree.label do => ""
+		text Text
+		self.left.printInOrder(level + 1, "[L]") ->+ text
+		self.printRootItem(level, prefix) ->+ text
+		self.right.printInOrder(level + 1, "[R]") ->+ text
+		=> text
+	}
+
+	self addRecursive(label Text, item Item) => Bool {
+		if self.label = Tree.label do {
+			self.label <- label
+			self.item <- item
+			return true
+		}
+		if self.item.compare(item) {
+			< 0 do return self.left.addRecursive(label, item);
+			> 0 do return self.right.addRecursive(label, item);
+		}
+		return false;
+	}
+
+	preorder(tree Tree, onVisit ::(tree Tree)) {
+		if tree.label = Tree.label do return;
+		onVisit(tree)
+		Tree.preorder(tree.left, onVisit)
+		Tree.preorder(tree.right, onVisit)
+	}
+
+	inorder(tree Tree, onVisit ::(tree Tree)) {
+		if tree.label = Tree.label do return;
+		onVisit(tree)
+		Tree.inorder(tree.left, onVisit)
+		Tree.inorder(tree.right, onVisit)
+	}
+
+	postorder(tree Tree, onVisit ::(tree Tree)) {
+		if tree.label = Tree.label do return;
+		onVisit(tree)
+		Tree.postorder(tree.left, onVisit)
+		Tree.postorder(tree.right, onVisit)
+	}
+
+	self visit(
+		strategy ::(tree Tree, onVisit ::(tree Tree)) default Tree.preorder,
+		onVisit ::(tree Tree),
+	) {
+		strategy(self, onVisit)
+	}
+
+>
+
+import giovi.util.Random as Random
+
+root Tree <- <label: "root">
+for i in 0..16 do {
+	root.addRecursive(Random.text(), <Random.integer()>)
+}
+root.printPreOrder(0, "[root]") -> _out
+root.visit(
+	strategy: Tree.preorder,
+	onVisit: ::{
+		"i'm visiting ${tree.label} which has containts ${tree.item}" -> _out
+	},
+)
