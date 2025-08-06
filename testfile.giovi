@@ -1,4 +1,4 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
 
 # This is a file for testing syntax highlighting, folds and indentations
 
@@ -167,9 +167,17 @@ f <- ::() => Int {}
 f <- ::(a Int) => Int {}
 f <- ::(a Int, b Int) => Int { }
 
+################################################################################ Modules
+import some.module as Module
+
+module Module {
+	module SubModule {
+	}
+}
+
 ################################################################################ Statements
 
-constant PI Real <- 3.14r
+const PI Real <- 3.14r
 
 if true do {
 
@@ -196,7 +204,7 @@ for i in 0..10 do {
 for _ in 0..10 do skip
 for k : v in map do {}
 for k : [v : w] in map do {}
-for color <r g b> in listOfColors do {}
+for color <r, g, b> in listOfColors do {}
 
 a  <- b
 a +<- b

@@ -1,20 +1,24 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
 
+import [
+	giovi.util.Ansi as Ansi
+	giovi.util.Thread as Thread
+]
 
 #? When enabled, user will be prompted before proceeding with computation
-constant ITERATIVE Bool <- false
+const ITERATIVE Bool <- true
+
+#? Interval in millisecond between each iteration
+#? When ITERATIVE mode is enabled, this is ignored
+const INTERVAL_MS Int <- 100
 
 #? When enabled, ansi escape codes will be used to redraw the output
-constant REDRAW Bool <- true
-
-esc Text <- "\u001B"
-ansiMove(column Int, line Int)  { _out +<- "$esc[$line;${column}H"}
-ansiErase(mode Int)             { _out +<- "$esc[${mode}J"}
+const REDRAW Bool <- true
 
 #? Directions
-constant R Text <- "R"
-constant L Text <- "L"
-constant S Text <- "S"
+const R Text <- "R"
+const L Text <- "L"
+const S Text <- "S"
 
 #? Describe the transition between TM states
 Transition <
@@ -131,7 +135,7 @@ produce(machine Machine, conf Configuration) => Configuration {
 
 ################################################################################
 
-constant STATES_PRESETS [Text : [Text : State]] <- [
+const STATES_PRESETS [Text : [Text : State]] <- [
 
 	"bitflip" : [
 		"initial" : State.<"initial", [
@@ -367,9 +371,9 @@ constant STATES_PRESETS [Text : [Text : State]] <- [
 
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"esame2">
+machine Machine <- Machine.<states: STATES_PRESETS@"bit_counter">
 
-tape [Text] <- "aaabaaabbb" / ""
+tape [Text] <- "011001" / ""
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
 
 prettyMachine(machine) -> _out
@@ -379,15 +383,16 @@ repeat {
 	if ITERATIVE do {
 		"Press [Enter] to proceed" -> _out
 		_in -> _out
+	} else {
+		Thread.sleep(INTERVAL_MS)
 	}
 	if REDRAW do {
-		ansiErase(2)
-		ansiMove(0, 0)
+		Ansi.erase(2) ->+ _out
+		Ansi.moveTo(0, 0) ->+ _out
 	}
 	produce(machine, configuration) -> configuration
 	"" -> _out
 	prettyConf(configuration) -> _out
-	# for i in 0..0x05ffff do {}
 	if configuration.state.label {
 		= "accept" do {
 			"accepted" -> _out

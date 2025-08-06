@@ -1,6 +1,6 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
 
-constant INF Int <- 99999999
+const INF Int <- 99999999
 
 # TODO: actually implement priority queue
 

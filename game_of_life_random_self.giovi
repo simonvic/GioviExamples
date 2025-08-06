@@ -1,17 +1,18 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
+
+import [
+	giovi.util.Random as Random
+	giovi.util.Ansi as Ansi
+]
 
 #? When enabled, ansi escape codes will be used to redraw the output
-constant REDRAW Bool <- true
-
-esc Text <- "\u001B"
-ansiMove(column Int, line Int)  { _out +<- "$esc[$line;${column}H"}
-ansiErase(mode Int)             { _out +<- "$esc[${mode}J"}
+const REDRAW Bool <- true
 
 #? When enabled, gradient life stages will be used.
-constant USE_GRADIENTS Bool <- true
+const USE_GRADIENTS Bool <- true
 
 #? Character for each life stage from dead to alive
-constant LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
+const LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 
 #?
 #? Codex for traslating a 3x2 matrix into a braille character.
@@ -19,10 +20,10 @@ constant LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 #? https://en.wikipedia.org/wiki/Braille_ASCII which here is represented by the
 #? index in the string
 #? For example the character ⠬ is at index 13 which in binary corresponds to 00001101
-constant CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
+const CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
 
 #? Directions to use when checking for neighbours
-constant DIRS [[Int]] <- [
+const DIRS [[Int]] <- [
 	[-1, -1]
 	[-1, 0]
 	[-1, 1]
@@ -150,10 +151,10 @@ _in as Int -> columns Int
 state [[Int ** columns] ** rows]
 <state> -> currentGen State
 
-ansiErase(2)
+Ansi.erase(2) ->+ _out
 for r in 0..rows - 1 do {
 	for c in 0..columns - 1 do {
-		ansiMove(0, 0)
+		Ansi.moveTo(0, 0)
 		#currentGen.toBraille() -> _out
 		currentGen.state@r@c <- Random.integer() % 4
 	}
@@ -167,9 +168,9 @@ currentGen.toText() -> _out
 "Press enter to start simulation" ->+ _out
 _in -> _out
 i Int
-if REDRAW do ansiErase(2)
+if REDRAW do Ansi.erase(2) ->+ _out
 repeat {
-	if REDRAW do ansiMove(0, 0)
+	if REDRAW do Ansi.moveTo(0, 0) ->+ _out
 	"-"^80 ->+ _out
 	"Generation: #$i" -> _out
 	#currentGen.toBraille() -> _out
@@ -181,5 +182,6 @@ repeat {
 	}
 	currentGen <- nextGen
 	i +<- 1
+	if i = 128 do break
 }
 

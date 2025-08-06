@@ -1,7 +1,12 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
+
+import [
+	giovi.util.Thread as Thread
+	giovi.util.Random as Rand
+]
 
 100 -> max Int
 for i in 0..max do {
-	for j in 0..0x0ffff do {} # LOLOLOLOL
+	Thread.sleep(Rand.integer() % 50 + 50)
 	"[" + "="^i + "-"^{max - i} + "] $i%\r" ->+ _out
 }

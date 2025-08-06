@@ -1,10 +1,12 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
+
+import giovi.util.Thread as Thread
 
 "Insert space separated words: " ->+ _out
 _in -> line Text
 for i in 3..1 do {
 	"Get ready in $i...\r" ->+ _out
-	for i in 0..0x1fffff do {}
+	Thread.sleep(1000)
 }
 "" -> _out
 line / " " -> words [Text]

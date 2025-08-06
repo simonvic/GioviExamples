@@ -1,9 +1,9 @@
-# GioviSpecs 0.50
+# GioviSpecs 0.56
 
-constant COST_MISMATCH_VOWEL_CONSONANT Int <- 7
-constant COST_MISMATCH_VOWEL_VOWEL Int <- 3
-constant COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
-constant COST_GAP Int <- 5
+const COST_MISMATCH_VOWEL_CONSONANT Int <- 7
+const COST_MISMATCH_VOWEL_VOWEL Int <- 3
+const COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
+const COST_GAP Int <- 5
 
 #?{
 # Check if character is a vowel
