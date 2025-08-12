@@ -1,4 +1,4 @@
-# GioviSpecs 0.56
+# GioviSpecs 0.57
 
 # This is a file for testing syntax highlighting, folds and indentations
 
@@ -71,6 +71,7 @@ at [Text] <- [
 	interpolation:
 		$foo
 		${foo}
+		${foo.foo()}
 		${a + FOO}
 	}",
 	'exact text',
@@ -152,6 +153,18 @@ foo(
 
 sum(69, _)
 
+foo()
+foo.foo()
+foo.foo.foo()
+{foo}()
+foo@0()
+
+=> foo()
+=> foo.foo()
+=> foo.foo.foo()
+=> {foo}()
+=> foo@0()
+
 f ::()
 f ::(a Int)
 f ::(a Int, b Int)
@@ -169,6 +182,13 @@ f <- ::(a Int, b Int) => Int { }
 
 ################################################################################ Modules
 import some.module as Module
+import [
+	foo.bar
+	foo.bar as Bar
+	"foo"
+	"foo".bar
+	"file://foo".bar.baz
+]
 
 module Module {
 	module SubModule {
@@ -189,7 +209,7 @@ if x {
 	= 69 do {}
 	in someList do {}
 	is Real when !someCondition do {}
-	is Real do {}
+	is r Real do {}
 	is not Int do {}
 }
 
