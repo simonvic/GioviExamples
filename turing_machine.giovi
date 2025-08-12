@@ -6,7 +6,7 @@ import [
 ]
 
 #? When enabled, user will be prompted before proceeding with computation
-const ITERATIVE Bool <- true
+const ITERATIVE Bool <- false
 
 #? Interval in millisecond between each iteration
 #? When ITERATIVE mode is enabled, this is ignored
@@ -371,7 +371,7 @@ const STATES_PRESETS [Text : [Text : State]] <- [
 
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"bit_counter">
+machine Machine <- Machine.<states: STATES_PRESETS@"bitshift_right">
 
 tape [Text] <- "011001" / ""
 configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
@@ -379,6 +379,10 @@ configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"
 prettyMachine(machine) -> _out
 "=== Computing" -> _out
 prettyConf(configuration) -> _out
+if not ITERATIVE do {
+	"Press [Enter] to start" -> _out
+	_in -> _out
+}
 repeat {
 	if ITERATIVE do {
 		"Press [Enter] to proceed" -> _out
