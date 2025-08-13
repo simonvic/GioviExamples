@@ -199,6 +199,8 @@ module Module {
 
 const PI Real <- 3.14r
 
+alias SomeType as SomeAlias
+
 if true do {
 
 } else {
