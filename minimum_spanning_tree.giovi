@@ -1,10 +1,8 @@
-# GioviSpecs 0.56
-
 const INF Int <- 99999999
 
 # TODO: actually implement priority queue
 
-#?{
+#{?
 # Extract the minimum from a (fake) priority queue
 # @param queue
 # @return minimum edge
@@ -20,7 +18,7 @@ extractMin(queue [Text : Int]) => Text {
 	=> min
 }
 
-#?{
+#{?
 # Print graph
 # @param graph (adjacency list)
 }#
@@ -34,7 +32,7 @@ printGraph(graph [Text : [Text : Int]]) {
 	}
 }
 
-#?{
+#{?
 # Print MST
 # @param mst [child : parent]
 }#
@@ -52,7 +50,7 @@ printMST(mst [Text : Text]) {
 	"cost: $mstCost" -> _out
 }
 
-#?{
+#{?
 # Prim's greedy algorithm to find MST (Minimum Spanning Tree)
 # by holding unexplored nodes in a priority queue with cost to reach it as key;
 # while queue is not empty, find cheapest edge and add it to the MST

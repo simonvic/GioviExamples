@@ -1,6 +1,4 @@
-# GioviSpecs 0.50
-
-#?{
+#{?
 # Recursive fibonacci.
 # @param n = value of fibonacci to find
 # @return fibonacci sequence at n
@@ -10,7 +8,7 @@ fibonacci(n Int) => Int {
 	=> fibonacci(n - 1) + fibonacci(n - 2)
 }
 
-#?{
+#{?
 # Compute fibonacci with the golden ratio
 # @param n = value of fibonacci to find
 # @return fibonacci sequence at n
@@ -22,7 +20,7 @@ fibonacciGoldenRatio(n Int) => Int {
 	=> {{goldenRatio^n - conjugate^n} / sqrt5} as Int
 }
 
-#?{
+#{?
 # Iterative bottom-up fibonacci
 # @param n = value of fibonacci to find
 # @return fibonacci of sequence at n
@@ -36,7 +34,7 @@ fibonacciBottomUp(n Int) => Int {
 	=> cache@{n - 1}
 }
 
-#?{
+#{?
 # Iterative fibonacci with memoization via associative array
 # @param n = value of fibonacci to find
 # @return fibonacci sequence at n
@@ -49,7 +47,7 @@ fibonacciAssociativeMemoIter(n Int) => Int {
 	=> cache@n;
 }
 
-#?{
+#{?
 # Iterative fibonacci with memoization via array
 # @param n = value of fibonacci to find
 # @return fibonacci sequence at n
@@ -63,7 +61,7 @@ fibonacciMemoIter(n Int) => Int {
 	=> cache@{n - 1};
 }
 
-#?{
+#{?
 # Iterative fibonacci with better space complexity
 # @param n = value of fibonacci to find
 # @return fibonacci sequence at n
@@ -83,7 +81,6 @@ fibonacciBottomUpBetterSpace(n Int) => Int {
 "Insert iteration count: " ->+ _out
 _in as Int -> n Int
 "Fibonacci of $n will be computed" -> _out
-algorithm Text
 repeat {
 	"{
 	Select algorithm:

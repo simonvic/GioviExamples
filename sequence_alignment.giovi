@@ -1,11 +1,9 @@
-# GioviSpecs 0.56
-
 const COST_MISMATCH_VOWEL_CONSONANT Int <- 7
 const COST_MISMATCH_VOWEL_VOWEL Int <- 3
 const COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
 const COST_GAP Int <- 5
 
-#?{
+#{?
 # Check if character is a vowel
 # @param c Text
 #	@pre c is a single character
@@ -15,7 +13,7 @@ isVowel(c Text) => Bool {
 	=> c ~= "AEIOUaeiou"
 }
 
-#?{
+#{?
 # Get the mismatch cost between two characters
 # @param c1 Text
 #	@pre c1 is a single character
@@ -34,7 +32,7 @@ getMismatchCost(c1 Text, c2 Text) => Int {
 			else => COST_MISMATCH_CONSONANT_CONSONANT;
 }
 
-#?{
+#{?
 # Get the minimum between three integers
 # @param a Int
 # @param b Int
@@ -48,7 +46,7 @@ min(a Int, b Int, c Int) => Int {
 	=> min
 }
 
-#?{
+#{?
 # Compute sequence alignment
 # @param x Text
 # @param y Text
