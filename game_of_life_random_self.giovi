@@ -5,6 +5,10 @@ import [
 	giovi.util.Ansi as Ansi
 ]
 
+#? Maximum amount of iteration to simulate before interrupting
+#? Use -1 for infinite iterations
+const MAX_ITERATION Int <- -1
+
 #? When enabled, ansi escape codes will be used to redraw the output
 const REDRAW Bool <- true
 
@@ -181,6 +185,6 @@ repeat {
 	}
 	currentGen <- nextGen
 	i +<- 1
-	if i = 128 do break
+	if i = MAX_ITERATION do break
 }
 
