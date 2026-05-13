@@ -7,24 +7,22 @@ Job <
 	value Real #? Value of job
 >
 
-#?
-# Check if two jobs schedules are overlapping
-# @param j1 job
-#	@pre j1.start >= j2.start
-# @param j2 job
-#	@pre j2.start < j1.start
-# @return true if they're overlapping, false otherwise
+#? Check if two jobs schedules are overlapping
+#? @param j1 job
+#?   @pre j1.start >= j2.start
+#? @param j2 job
+#?   @pre j2.start < j1.start
+#? @return true if they're overlapping, false otherwise
 areOverlapping(j1 Job, j2 Job) => Bool {
 	# => j1.start ~= 0..10
 	=> j1.start < j2.finish
 }
 
-#?
-# Find the index of the first non-overlapping job
-# @param jobIndex index of the job to find a compatible job of
-# @param jobs
-#	@pre sorted by increasing finish time
-# @return index of compatible job, -1 if none are compatible
+#? Find the index of the first non-overlapping job
+#? @param jobIndex index of the job to find a compatible job of
+#? @param jobs
+#?   @pre sorted by increasing finish time
+#? @return index of compatible job, -1 if none are compatible
 p(jobIndex Int, jobs [Job]) => Int {
 	if jobIndex < 1 do return -1
 	for index in jobIndex - 1 .. 0 do {
@@ -35,10 +33,9 @@ p(jobIndex Int, jobs [Job]) => Int {
 	return -1
 }
 
-#?
-# Sort the jobs by increasing finish time
-# @param jobs
-# @return sorted jobs
+#? Sort the jobs by increasing finish time
+#? @param jobs
+#? @return sorted jobs
 sortByFinishTimeInc(jobs [Job]) => [Job] {
 	sorted [Job]
 	repeat if jobs@% != 0 {
@@ -58,9 +55,8 @@ sortByFinishTimeInc(jobs [Job]) => [Job] {
 max(x Int, y Int) => Int { if x > y do => x else => y }
 maxValue(x Real, y Real) => Real { if x > y do => x else => y }
 
-#?
-# Pretty print of job schedules
-# @param jobs
+#? Pretty print of job schedules
+#? @param jobs
 drawJobs(jobs [Job]) {
 	maxFinishTime Int
 	for j in jobs do if j.finish > maxFinishTime do maxFinishTime <- j.finish
@@ -77,10 +73,9 @@ drawJobs(jobs [Job]) {
 	txt -> _out
 }
 
-#?
-# Compute the optimal value recursively
-# @param j index of the job
-# @return optimal value for compatible jobs with j
+#? Compute the optimal value recursively
+#? @param j index of the job
+#? @return optimal value for compatible jobs with j
 optRecursive(j Int) => Real {
 	if j < 0 do {
 		=> 0r
@@ -93,13 +88,12 @@ optRecursive(j Int) => Real {
 }
 
 #? Memoization table for the opt values
-# We use a map for the sake of redeability
+#? We use a map for the sake of redeability
 memo [Int : Real] <- [-1 : 0]
 
-#?
-# Compute the optimal value recursively with the help of memoization
-# @param j index of the job
-# @return optimal value for compatible jobs with j
+#? Compute the optimal value recursively with the help of memoization
+#? @param j index of the job
+#? @return optimal value for compatible jobs with j
 optMemo(j Int) => Real {
 	if memo =~ j do => memo@j
 	memo +<- [
@@ -111,10 +105,9 @@ optMemo(j Int) => Real {
 	=> memo@j
 }
 
-#?
-# Compute the optimal value iteratively with the help of memoization
-# @param j index of the job
-# @return optimal value for compatible jobs with j
+#? Compute the optimal value iteratively with the help of memoization
+#? @param j index of the job
+#? @return optimal value for compatible jobs with j
 optMemoIter(j Int) => Real {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
@@ -127,10 +120,9 @@ optMemoIter(j Int) => Real {
 	=> memo@j
 }
 
-#?
-# Find the optimal scheduling
-# @param jobs
-# @return optimal scheduling
+#? Find the optimal scheduling
+#? @param jobs
+#? @return optimal scheduling
 solve(jobs [Job]) => [Job] {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
@@ -143,11 +135,10 @@ solve(jobs [Job]) => [Job] {
 	=> findSolution(jobs@% - 1, [])
 }
 
-#?
-# PostProcess function to find solution in memoization table
-# @param j jobs index
-# @param solution list of jobs
-# @return solution
+#? PostProcess function to find solution in memoization table
+#? @param j jobs index
+#? @param solution list of jobs
+#? @return solution
 findSolution(j Int, solution [Job]) => [Job] {
 	if j < 0 do {
 		=> solution
@@ -192,7 +183,7 @@ sortByFinishTimeInc(jobs) -> jobs
 drawJobs(jobs)
 
 #? Cache of job index and p(job index)
-# We use a map for the sake of redeability
+#? We use a map for the sake of redeability
 pCache [Int : Int]
 for i in jobs@@ do pCache +<- [i : p(i, jobs)]
 

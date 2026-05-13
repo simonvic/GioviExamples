@@ -62,10 +62,9 @@ Configuration <
 	state State
 >
 
-#?
-# Pretty print of a machine
-# @param machine
-# @return pretty text
+#? Pretty print of a machine
+#? @param machine
+#? @return pretty text
 prettyMachine(machine Machine) => Text {
 	"=== Machine\n" -> pretty Text
 	for label : state in machine.states do {
@@ -78,10 +77,9 @@ prettyMachine(machine Machine) => Text {
 	=> pretty
 }
 
-#?
-# Pretty print of a machine configuration
-# @param machine
-# @return pretty text
+#? Pretty print of a machine configuration
+#? @param machine
+#? @return pretty text
 prettyConf(conf Configuration) => Text {
 	pretty Text <- "|"
 	for t in conf.tape do "$t|" ->+ pretty
@@ -90,11 +88,10 @@ prettyConf(conf Configuration) => Text {
 	=> pretty
 }
 
-#?
-# Perform a computational pass
-# @param machine
-# @param current configuration
-# @return new configuration
+#? Perform a computational pass
+#? @param machine
+#? @param current configuration
+#? @return new configuration
 produce(machine Machine, conf Configuration) => Configuration {
 	# read tape
 	input Text

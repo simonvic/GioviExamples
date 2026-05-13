@@ -6,11 +6,10 @@ const USE_GRADIENTS Bool <- true
 #? Character for each life stage from dead to alive
 const LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 
-#?
-# Codex for traslating a 3x2 matrix into a braille character.
-# Each braille character has its own binary representation https://en.wikipedia.org/wiki/Braille_ASCII
-# which here is represented by the index in the string
-# For example the character ⠬ is at index 13 which in binary corresponds to 00001101
+#? Codex for traslating a 3x2 matrix into a braille character.
+#? Each braille character has its own binary representation https://en.wikipedia.org/wiki/Braille_ASCII
+#? which here is represented by the index in the string
+#? For example the character ⠬ is at index 13 which in binary corresponds to 00001101
 const CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
 
 #? Directions to use when checking for neighbours
@@ -25,10 +24,9 @@ const DIRS [[Int]] <- [
 	[0, -1]
 ]
 
-#?
-# Convert the state in a pretty text
-# @param state
-# @return state
+#? Convert the state in a pretty text
+#? @param state
+#? @return state
 toText(state [[Int]]) => Text {
 	output Text
 	for row in state do {
@@ -47,10 +45,9 @@ toText(state [[Int]]) => Text {
 	=> output
 }
 
-#?
-# Convert the provided state to a text representation using braille characters
-# @param state
-# @return text
+#? Convert the provided state to a text representation using braille characters
+#? @param state
+#? @return text
 toBraille(state [[Int]]) => Text {
 	output Text
 	rows Int <- state@%
@@ -84,11 +81,10 @@ toBraille(state [[Int]]) => Text {
 	=> output
 }
 
-#?
-# Count the alive neighbours of the specified cell
-# @param rowIdx row index of the cell to count neighbours of
-# @param colIdx column index of the cell to count neighbours of
-# @return count of alive neighbours
+#? Count the alive neighbours of the specified cell
+#? @param rowIdx row index of the cell to count neighbours of
+#? @param colIdx column index of the cell to count neighbours of
+#? @return count of alive neighbours
 countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 	count Int
 	for dir in DIRS do {
@@ -111,10 +107,9 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 	=> count
 }
 
-#?
-# Simuluate the generation and update the state
-# @param state current generation state
-# @return next generation state
+#? Simuluate the generation and update the state
+#? @param state current generation state
+#? @return next generation state
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
 	for rowIdx in state@@ do {

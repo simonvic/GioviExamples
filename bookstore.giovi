@@ -12,11 +12,9 @@ Book <
 	pageCount Natural
 >
 
-#{?
-#	@brief Convert a list of book to text
-#	@param shelf - list of book
-#	@return list of text
-}#
+#? Convert a list of book to text
+#? @param shelf - list of book
+#? @return list of text
 shelfToText(shelf [Book]) => [Text] {
 	books [Text]
 	for book in shelf do {
@@ -34,11 +32,9 @@ shelfToText(shelf [Book]) => [Text] {
 	=> books
 }
 
-#{?
-#	@brief Convert a list of book to a HTML table
-#	@param shelf - list of book
-#	@return text - html table
-}#
+#? @brief Convert a list of book to a HTML table
+#? @param shelf - list of book
+#? @return text - html table
 shelfToHTML(shelf [Book]) => Text {
 	table Text <- "{
 		<table>
@@ -66,11 +62,9 @@ shelfToHTML(shelf [Book]) => Text {
 	=> table
 }
 
-#{?
-#	@brief Convert Book to a HTML table row
-#	@param book
-#	@return html table row
-}#
+#? @brief Convert Book to a HTML table row
+#? @param book
+#? @return html table row
 toRowHTML(book Book) => Text {
 	=> "{
 		<tr>

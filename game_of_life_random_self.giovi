@@ -14,7 +14,6 @@ const USE_GRADIENTS Bool <- true
 #? Character for each life stage from dead to alive
 const LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 
-#?
 #? Codex for traslating a 3x2 matrix into a braille character.
 #? Each braille character has its own binary representation
 #? https://en.wikipedia.org/wiki/Braille_ASCII which here is represented by the

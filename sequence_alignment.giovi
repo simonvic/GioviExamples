@@ -3,24 +3,20 @@ const COST_MISMATCH_VOWEL_VOWEL Int <- 3
 const COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
 const COST_GAP Int <- 5
 
-#{?
-# Check if character is a vowel
-# @param c Text
-#	@pre c is a single character
-# @return true if c is vowel, false otherwise
-}#
+#? Check if character is a vowel
+#? @param c Text
+#?   @pre c is a single character
+#? @return true if c is vowel, false otherwise
 isVowel(c Text) => Bool {
 	=> c ~= "AEIOUaeiou"
 }
 
-#{?
-# Get the mismatch cost between two characters
-# @param c1 Text
-#	@pre c1 is a single character
-# @param c2 Text
-#	@pre c2 is a single character
-# @return mismatch cost
-}#
+#? Get the mismatch cost between two characters
+#? @param c1 Text
+#?   @pre c1 is a single character
+#? @param c2 Text
+#?   @pre c2 is a single character
+#? @return mismatch cost
 getMismatchCost(c1 Text, c2 Text) => Int {
 	if c1 = c2 do => 0
 	if isVowel(c1)
@@ -32,13 +28,11 @@ getMismatchCost(c1 Text, c2 Text) => Int {
 			else => COST_MISMATCH_CONSONANT_CONSONANT;
 }
 
-#{?
-# Get the minimum between three integers
-# @param a Int
-# @param b Int
-# @param c Int
-# @return minimum between a b and c
-}#
+#? Get the minimum between three integers
+#? @param a Int
+#? @param b Int
+#? @param c Int
+#? @return minimum between a b and c
 min(a Int, b Int, c Int) => Int {
 	min Int <- a
 	if b < min do min <- b
@@ -46,12 +40,10 @@ min(a Int, b Int, c Int) => Int {
 	=> min
 }
 
-#{?
-# Compute sequence alignment
-# @param x Text
-# @param y Text
-# @return mismatch cost
-}#
+#? Compute sequence alignment
+#? @param x Text
+#? @param y Text
+#? @return mismatch cost
 sequenceAlignment(x Text, y Text) => Int {
 	m Int <- x@%
 	n Int <- y@%
