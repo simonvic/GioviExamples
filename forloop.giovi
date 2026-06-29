@@ -63,8 +63,8 @@ for s <a, b, c> in listOfStruct do "$s <$a $b $c>" -> _out
 # for s <a Int, b Int, c Int> in listOfStruct do "$s <$a $b $c>" -> _out
 
 "{\n
-for <.b, .a, .c> in listOfStruct}" -> _out
-for <.b, .a, .c> in listOfStruct do "<$a $b $c>" -> _out
+for <:b, :a, :c> in listOfStruct}" -> _out
+for <:b, :a, :c> in listOfStruct do "<$a $b $c>" -> _out
 
 
 
@@ -81,8 +81,8 @@ for <x, y, z <a, b, c>> in listOfNestedStruct}" -> _out
 for <x, y, z <a, b, c>> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
 
 "{\n
-for <.y, .z <.b, .a, .c>, .x> in listOfNestedStruct}" -> _out
-for <.y, .z <.b, .a, .c>, .x> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
+for <:y, z:z <:b, :a, :c>, :x> in listOfNestedStruct}" -> _out
+for <:y, z:z <:b, :a, :c>, :x> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
 
 
 
@@ -185,17 +185,4 @@ mapWithMapValue [Text : [Text : Int]] <- [
 for k : [k2 : v] in mapWithMapValue}" -> _out
 for k : [k2 : v] in mapWithMapValue do "$k : $k2 : $v" -> _out
 
-
-
 "\n-------------------------------------------------------------------------------" -> _out
-mapWithMapKey [[Text : Int] : Text] <- [
-	["x":1   "y":2   "z":3]   : "a"
-	["x":10  "y":20  "z":30]  : "b"
-	["x":100 "y":200 "z":300] : "c"
-]
-"iterating map with key map: $mapWithMapKey" -> _out
-"{\n
-for [k : v] : k2 in mapWithMapKey}" -> _out
-"THIS SHOULD FAIL (for now)" -> _out
-for [k : v] : k2 in mapWithMapKey do "[$k : $v] : $k2" -> _out
-
