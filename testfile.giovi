@@ -15,11 +15,11 @@ block
 }#
 
 #{?
-	This function computes the sum of two numbers
-	@param x Int
-	@param y Int
-	@return x + y
-	@code sum(2, 3) -> _out
+This function computes the sum of two numbers
+@param x Int
+@param y Int
+@return x + y
+@code sum(2, 3) -> _out
 }#
 sum(x Int, y Int) => Int {
 	=> x + y
@@ -262,6 +262,8 @@ a ->/ b
 => a =~ b
 => a ~= b
 => a is B
+=> a is <a1, a2>
+=> a is <:a1, a2:a2>
 => a@b 
 => a.b 
 
