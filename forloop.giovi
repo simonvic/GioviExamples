@@ -63,8 +63,8 @@ for s <a, b, c> in listOfStruct do "$s <$a $b $c>" -> _out
 # for s <a Int, b Int, c Int> in listOfStruct do "$s <$a $b $c>" -> _out
 
 "{\n
-for <:b, :a, :c> in listOfStruct}" -> _out
-for <:b, :a, :c> in listOfStruct do "<$a $b $c>" -> _out
+for <_:b, _:a, _:c> in listOfStruct}" -> _out
+for <_:b, _:a, _:c> in listOfStruct do "<$a $b $c>" -> _out
 
 
 
@@ -81,8 +81,8 @@ for <x, y, z <a, b, c>> in listOfNestedStruct}" -> _out
 for <x, y, z <a, b, c>> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
 
 "{\n
-for <:y, z:z <:b, :a, :c>, :x> in listOfNestedStruct}" -> _out
-for <:y, z:z <:b, :a, :c>, :x> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
+for <_:y, z:z <_:b, _:a, _:c>, _:x> in listOfNestedStruct}" -> _out
+for <_:y, z:z <_:b, _:a, _:c>, _:x> in listOfNestedStruct do "<$x $y $z <$a $b $c>>" -> _out
 
 
 
