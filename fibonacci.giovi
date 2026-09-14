@@ -1,7 +1,7 @@
 #? Recursive fibonacci.
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
-fibonacci(n Int) => Int {
+fibonacci(n:Int) => Int {
 	if n <= 2 do => 1
 	=> fibonacci(n - 1) + fibonacci(n - 2)
 }
@@ -9,57 +9,57 @@ fibonacci(n Int) => Int {
 #? Compute fibonacci with the golden ratio
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
-fibonacciGoldenRatio(n Int) => Int {
-	sqrt5 Real <- 5^{1/2}
-	goldenRatio Real <- {1 + sqrt5} / 2
-	conjugate Real <- - 1 / goldenRatio
+fibonacciGoldenRatio(n:Int) => Int {
+	sqrt5:Real <- 5^{1/2}
+	goldenRatio:Real <- {1 + sqrt5} / 2
+	conjugate:Real <- - 1 / goldenRatio
 	=> {{goldenRatio^n - conjugate^n} / sqrt5} as Int
 }
 
 #? Iterative bottom-up fibonacci
 #? @param n = value of fibonacci to find
 #? @return fibonacci of sequence at n
-fibonacciBottomUp(n Int) => Int {
+fibonacciBottomUp(n:Int) => Int {
 	if n = 0 | n = 1 do => n
-	cache [Int] <- [1 1]
+	cache:[Int] <- [1 1]
 	for i in 2..n do {
-		cache@{i - 2} + cache@{i - 1} ->+ cache
+		cache.{i - 2} + cache.{i - 1} ->+ cache
 	}
-	=> cache@{n - 1}
+	=> cache.{n - 1}
 }
 
 #? Iterative fibonacci with memoization via associative array
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
-fibonacciAssociativeMemoIter(n Int) => Int {
-	cache [Int : Int] <- [ 1:1 2:1 ]
+fibonacciAssociativeMemoIter(n:Int) => Int {
+	cache:[Int=>Int] <- [ 1=>1 2=>1 ]
 	for i in 3..n do {
-		cache +<- [ i : cache@{i - 1} + cache@{i - 2} ]
+		cache +<- [ i => cache.{i - 1} + cache.{i - 2} ]
 	}
-	=> cache@n;
+	=> cache.{n};
 }
 
 #? Iterative fibonacci with memoization via array
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
-fibonacciMemoIter(n Int) => Int {
-	cache [Int] <- [1 1]
+fibonacciMemoIter(n:Int) => Int {
+	cache:[Int] <- [1 1]
 	# NOTE: arrays indexes are 0-based
 	for i in 2..n-1 do {
-		cache +<- cache@{i - 1} + cache@{i - 2}
+		cache +<- cache.{i - 1} + cache.{i - 2}
 	}
-	=> cache@{n - 1};
+	=> cache.{n - 1};
 }
 
 #? Iterative fibonacci with better space complexity
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
-fibonacciBottomUpBetterSpace(n Int) => Int {
+fibonacciBottomUpBetterSpace(n:Int) => Int {
 	if n <= 1 do => n
-	x Int <- 0
-	y Int <- 1
+	x:Int <- 0
+	y:Int <- 1
 	for i in 2..n do {
-		temp Int <- x + y
+		temp:Int <- x + y
 		x <- y
 		y <- temp
 	}
@@ -67,7 +67,7 @@ fibonacciBottomUpBetterSpace(n Int) => Int {
 }
 
 "Insert iteration count: " ->+ _out
-_in as Int -> n Int
+_in as Int -> n:Int
 "Fibonacci of $n will be computed" -> _out
 repeat {
 	"{
@@ -80,7 +80,7 @@ repeat {
 		5) golden ratio
 		6) bottom up improved space
 	> }" ->+ _out
-	_in -> algorithm Text
+	_in -> algorithm:Text
 	if algorithm {
 		= "0" do break;
 		= "1" do "fibonacci($n) => ${fibonacci(n)}" -> _out

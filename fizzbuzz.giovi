@@ -1,7 +1,7 @@
 # GioviSpecs 0.50
 
-fizzbuzz(i Int) => Text {
-	output Text
+fizzbuzz(i:Int) => Text {
+	output:Text
 	if i % 3 = 0 do "fizz" ->+ output
 	if i % 5 = 0 do "buzz" ->+ output
 	if output = default do "$i" ->+ output

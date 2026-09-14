@@ -1,13 +1,13 @@
-const COST_MISMATCH_VOWEL_CONSONANT Int <- 7
-const COST_MISMATCH_VOWEL_VOWEL Int <- 3
-const COST_MISMATCH_CONSONANT_CONSONANT Int <- 4
-const COST_GAP Int <- 5
+const COST_MISMATCH_VOWEL_CONSONANT <- 7
+const COST_MISMATCH_VOWEL_VOWEL <- 3
+const COST_MISMATCH_CONSONANT_CONSONANT <- 4
+const COST_GAP <- 5
 
 #? Check if character is a vowel
 #? @param c Text
 #?   @pre c is a single character
 #? @return true if c is vowel, false otherwise
-isVowel(c Text) => Bool {
+isVowel(c:Text) => Bool {
 	=> c ~= "AEIOUaeiou"
 }
 
@@ -17,7 +17,7 @@ isVowel(c Text) => Bool {
 #? @param c2 Text
 #?   @pre c2 is a single character
 #? @return mismatch cost
-getMismatchCost(c1 Text, c2 Text) => Int {
+getMismatchCost(c1:Text, c2:Text) => Int {
 	if c1 = c2 do => 0
 	if isVowel(c1)
 		do if isVowel(c2)
@@ -33,8 +33,8 @@ getMismatchCost(c1 Text, c2 Text) => Int {
 #? @param b Int
 #? @param c Int
 #? @return minimum between a b and c
-min(a Int, b Int, c Int) => Int {
-	min Int <- a
+min(a:Int, b:Int, c:Int) => Int {
+	min:Int <- a
 	if b < min do min <- b
 	if c < min do min <- c
 	=> min
@@ -44,23 +44,23 @@ min(a Int, b Int, c Int) => Int {
 #? @param x Text
 #? @param y Text
 #? @return mismatch cost
-sequenceAlignment(x Text, y Text) => Int {
-	m Int <- x@%
-	n Int <- y@%
-	matrix [[Int ** n] ** m]
-	for i in 0..m - 1 do matrix@i@0 <- i * COST_GAP
-	for j in 0..n - 1 do matrix@0@j <- j * COST_GAP
+sequenceAlignment(x:Text, y:Text) => Int {
+	m:Int <- x.%
+	n:Int <- y.%
+	matrix:[[Int ** n] ** m]
+	for i in 0..m - 1 do matrix.{i}.0 <- i * COST_GAP
+	for j in 0..n - 1 do matrix.0.{j} <- j * COST_GAP
 	for i in 1..m - 1 do
 		for j in 1..n - 1 do
-			matrix@i@j <- min(
-				getMismatchCost(x@i, y@j) + matrix@{i - 1}@{j - 1},
-				COST_GAP + matrix@{i - 1}@j,
-				COST_GAP + matrix@i@{j - 1},
+			matrix.{i}.{j} <- min(
+				getMismatchCost(x.{i}, y.{j}) + matrix.{i - 1}.{j - 1},
+				COST_GAP + matrix.{i - 1}.{j},
+				COST_GAP + matrix.{i}.{j - 1},
 			)
 	"------" -> _out
-	for i in 0..m - 1 do matrix@i -> _out
+	for i in 0..m - 1 do matrix.{i} -> _out
 	"------" -> _out
-	=> matrix@{m-1}@{n-1}
+	=> matrix.{m-1}.{n-1}
 }
 
 
@@ -71,7 +71,7 @@ COST_MISMATCH_CONSONANT_CONSONANT 4
 COST_GAP                          5
 }" -> _out
 "Insert first string: " ->+ _out
-_in -> x Text
+_in -> x:Text
 "Insert second string: " ->+ _out
-_in -> y Text
+_in -> y:Text
 "Mismatch cost between '$x' and '$y' is ${sequenceAlignment(x, y)}" -> _out

@@ -21,7 +21,7 @@ This function computes the sum of two numbers
 @return x + y
 @code sum(2, 3) -> _out
 }#
-sum(x Int, y Int) => Int {
+sum(x:Int, y:Int) => Int {
 	=> x + y
 }
 
@@ -35,32 +35,32 @@ sum(x Int, y Int) => Int {
 
 ################################################################################ Primitives
 
-i Int default 69
-n Natural default 69n
-r Real default 6.9
-b Bool default true
-t Text default "hello world"
-l [Int] default [0..9]
-m [Text:Int] default ["a":0]
+i:Int default 69
+n:Natural default 69n
+r:Real default 6.9
+b:Bool default true
+t:Text default "hello world"
+l:[Int] default [0..9]
+m:[Text=>Int] default ["a"=>0]
 
 _out <- _in
 _out <- default
 _out <- _
 
-ai [Int] <- [
+li:[Int] <- [
 	69 69i
 	0xFFFFFF # hex
 	0o777 # octal
 	0b1000_1000_0101 # binary
 ]
 
-ar [Real] <- [
+lr:[Real] <- [
 	6.9 69r
 	1e+10 1e-10 1e10 # exponent notation
 	0x1e10p69 # hex exponent
 ]
 
-at [Text] <- [
+lt:[Text] <- [
 	"text",
 	"{
 	this is a "text block"
@@ -80,44 +80,44 @@ at [Text] <- [
 	}',
 ]
 
-maps [Text : Int] <- [
-	"a" : 69
-	"b" : 420
+maps:[Text=>Int] <- [
+	"a" => 69
+	"b" => 420
 ]
 
 ################################################################################ Tuples and structs
 
-Color <
-	r Int
-	g Int
-	b Int
+struct Color <
+	r:Int
+	g:Int
+	b:Int
 >
 
-Color : ColorRGBA <a Int>
+Color + struct ColorRGBA <a:Int>
 
 => <a b<c d>
 => <a {b>c} d>
-=> <a:a b:b c:c>
+=> <a=a b=b c=c>
 => Color.<>
 => Color.<1 2 3>
-=> Color.<r:1 g:2 b:3>
+=> Color.<r=1 g=2 b=3>
 
-Car <
-	paint Color default <r:255 g:255 b:255>
-	engine Engine
-	fuel Real
-	isOn Bool
+struct Car <
+	paint:Color default <r=255 g=255 b=255>
+	engine:Engine
+	fuel:Real
+	isOn:Bool
 
-	Engine <
-		kw Int
-		fuelType Text
+	struct Engine <
+		kw:Int
+		fuelType:Text
 	>
 
-	getPaintRGBA(car Car) => ColorRGBA {
+	getPaintRGBA(car:Car) => ColorRGBA {
 		=> ColorRGBA.<
-			r: car.paint.r
-			g: car.paint.g
-			b: car.paint.b
+			r=car.paint.r
+			g=car.paint.g
+			b=car.paint.b
 		>
 	}
 
@@ -125,7 +125,7 @@ Car <
 		self.isOn <- true
 	}
 
-	self paint(rgba ColorRGBA) => self {
+	self paint(rgba:ColorRGBA) => self {
 		self.paint <- rgba
 		=> self
 	}
@@ -134,18 +134,18 @@ Car <
 
 ################################################################################ Functions
 
-sum(x Int, y Int) => Int { => x + y }
+sum(x:Int, y:Int) => Int { => x + y }
 foo() => Int { return "hello world" }
 bar(
-	label1: param1 Int default 69,
-	label2: param2 Int default 69,
-	label3: param3 Int default 69,
+	label1=param1:Int default 69,
+	label2=param2:Int default 69,
+	label3=param3:Int default 69,
 ) { }
 foo(
-	a Int default 69,
-	b Int default 69,
-	c Int default 69,
-	d Int default 69,
+	a:Int default 69,
+	b:Int default 69,
+	c:Int default 69,
+	d:Int default 69,
 ) {
 }
 
@@ -155,28 +155,28 @@ foo()
 foo.foo()
 foo.foo.foo()
 {foo}()
-foo@0()
+foo.0()
 
 => foo()
 => foo.foo()
 => foo.foo.foo()
 => {foo}()
-=> foo@0()
+=> foo.0()
 
 f ::()
-f ::(a Int)
-f ::(a Int, b Int)
+f ::(a:Int)
+f ::(a:Int, b:Int)
 f ::() => Int
-f ::(a Int) => Int
-f ::(a Int, b Int) => Int
+f ::(a:Int) => Int
+f ::(a:Int, b:Int) => Int
 
 f <- ::{}
 f <- ::() {}
-f <- ::(a Int) {}
-f <- ::(a Int, b Int) {}
+f <- ::(a:Int) {}
+f <- ::(a:Int, b:Int) {}
 f <- ::() => Int {}
-f <- ::(a Int) => Int {}
-f <- ::(a Int, b Int) => Int { }
+f <- ::(a:Int) => Int {}
+f <- ::(a:Int, b:Int) => Int { }
 
 ################################################################################ Modules
 import some.mod as Module
@@ -195,7 +195,7 @@ module Module {
 
 ################################################################################ Statements
 
-const PI Real <- 3.14r
+const PI:Real <- 3.14r
 
 alias SomeType as SomeAlias
 
@@ -209,7 +209,7 @@ if x {
 	= 69 do {}
 	in someList do {}
 	is Real when !someCondition do {}
-	is r Real do {}
+	is r:Real do {}
 	is not Int do {}
 }
 
@@ -222,8 +222,8 @@ for i in 0..10 do {
 
 }
 for _ in 0..10 do skip
-for k : v in map do {}
-for k : [v : w] in map do {}
+for k => v in map do {}
+for k => [v => w] in map do {}
 for color <r, g, b> in listOfColors do {}
 
 a  <- b
@@ -263,8 +263,7 @@ a ->/ b
 => a ~= b
 => a is B
 => a is <a1, a2>
-=> a is <:a1, a2:a2>
-=> a@b 
+=> a is <_=a1, a2=a2>
 => a.b 
 
 ################################################################################ Identifiers

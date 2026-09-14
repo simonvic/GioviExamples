@@ -1,19 +1,19 @@
 # GioviSpecs 0.56
 
 #? When enabled, gradient life stages will be used.
-const USE_GRADIENTS Bool <- true
+const USE_GRADIENTS <- true
 
 #? Character for each life stage from dead to alive
-const LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
+const LIFE_STAGES <- [ "  " "░░" "▒▒" "▓▓" "██" ]
 
 #? Codex for traslating a 3x2 matrix into a braille character.
 #? Each braille character has its own binary representation https://en.wikipedia.org/wiki/Braille_ASCII
 #? which here is represented by the index in the string
 #? For example the character ⠬ is at index 13 which in binary corresponds to 00001101
-const CODEX Text <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
+const CODEX <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
 
 #? Directions to use when checking for neighbours
-const DIRS [[Int]] <- [
+const DIRS <- [
 	[-1, -1]
 	[-1, 0]
 	[-1, 1]
@@ -27,17 +27,17 @@ const DIRS [[Int]] <- [
 #? Convert the state in a pretty text
 #? @param state
 #? @return state
-toText(state [[Int]]) => Text {
-	output Text
+toText(state:[[Int]]) => Text {
+	output:Text
 	for row in state do {
 		for cell in row do {
 			if cell {
-				<= 0 do LIFE_STAGES@0 ->+ output
-				>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
-				=  1 when USE_GRADIENTS do LIFE_STAGES@1 ->+ output
-				=  2 when USE_GRADIENTS do LIFE_STAGES@2 ->+ output
-				=  3 when USE_GRADIENTS do LIFE_STAGES@3 ->+ output
-				>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
+				<= 0 do LIFE_STAGES.0 ->+ output
+				>= 1 when not USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
+				=  1 when USE_GRADIENTS do LIFE_STAGES.1 ->+ output
+				=  2 when USE_GRADIENTS do LIFE_STAGES.2 ->+ output
+				=  3 when USE_GRADIENTS do LIFE_STAGES.3 ->+ output
+				>= 4 when USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
 			}
 		}
 		"\n" ->+ output
@@ -48,17 +48,17 @@ toText(state [[Int]]) => Text {
 #? Convert the provided state to a text representation using braille characters
 #? @param state
 #? @return text
-toBraille(state [[Int]]) => Text {
-	output Text
-	rows Int <- state@%
-	columns Int <- state@0@%
+toBraille(state:[[Int]]) => Text {
+	output:Text
+	rows:Int <- state.%
+	columns:Int <- state.0.%
 
 	# Iterate 3x2 chunks (a single braille char)
 	for chunkRowIdx in 0..rows-1..3 do {
 		for chunkColIdx in 0..columns-1..2 do {
 
 			#? Binary of braille char index
-			"0b" -> char Text
+			"0b" -> char:Text
 
 			# Iterate first and second column of the chunk
 			for colIdx in chunkColIdx..chunkColIdx + 1 do {
@@ -67,14 +67,14 @@ toBraille(state [[Int]]) => Text {
 				for rowIdx in chunkRowIdx..chunkRowIdx + 2 do {
 					if rowIdx >= rows | colIdx >= columns do {
 						char +<- "0"
-					} else if state@rowIdx@colIdx {
+					} else if state.{rowIdx}.{colIdx} {
 						<= 0 do char +<- "0"
 						>= 1 do char +<- "1"
 					}
 				}
 
 			}
-			output +<- CODEX@{char as Int}
+			output +<- CODEX.{char as Int}
 		}
 		output +<- "\n"
 	}
@@ -85,21 +85,21 @@ toBraille(state [[Int]]) => Text {
 #? @param rowIdx row index of the cell to count neighbours of
 #? @param colIdx column index of the cell to count neighbours of
 #? @return count of alive neighbours
-countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
-	count Int
+countNeighbours(rowIdx:Int, colIdx:Int, state:[[Int]]) => Int {
+	count:Int
 	for dir in DIRS do {
-		rowDir Int <- dir@0
-		colDir Int <- dir@1
-		neighbourRowIdx Int <- rowIdx + rowDir
+		rowDir:Int <- dir.0
+		colDir:Int <- dir.1
+		neighbourRowIdx:Int <- rowIdx + rowDir
 		if neighbourRowIdx {
-			< 0 | >= state@% do skip
+			< 0 | >= state.% do skip
 		}
-		neighbourColIdx Int <- colIdx + colDir
+		neighbourColIdx:Int <- colIdx + colDir
 		if neighbourColIdx {
-			< 0 | >= state@neighbourRowIdx@% do skip
+			< 0 | >= state.{neighbourRowIdx}.% do skip
 		}
 
-		if state@neighbourRowIdx@neighbourColIdx >= 1 do {
+		if state.{neighbourRowIdx}.{neighbourColIdx} >= 1 do {
 			1 ->+ count
 		}
 
@@ -110,15 +110,15 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 #? Simuluate the generation and update the state
 #? @param state current generation state
 #? @return next generation state
-update(state [[Int]]) => [[Int]] {
-	out [[Int]] <- state
-	for rowIdx in state@@ do {
-		state@rowIdx -> row [Int]
-		for colIdx in row@@ do {
-			countNeighbours(rowIdx, colIdx, state) -> count Int
+update(state:[[Int]]) => [[Int]] {
+	out:[[Int]] <- state
+	for rowIdx in state.@ do {
+		state.{rowIdx} -> row:[Int]
+		for colIdx in row.@ do {
+			countNeighbours(rowIdx, colIdx, state) -> count:Int
 			if count {
-				= 3 do out@rowIdx@colIdx +<- 1
-				< 2 | >= 4 do out@rowIdx@colIdx <- 0
+				= 3 do out.{rowIdx}.{colIdx} +<- 1
+				< 2 | >= 4 do out.{rowIdx}.{colIdx} <- 0
 			}
 		}
 	}
@@ -126,9 +126,9 @@ update(state [[Int]]) => [[Int]] {
 }
 
 #? Initial state presets
-const PRESETS [ Text : [[Int]] ] <- [
+const PRESETS : [Text=>[[Int]]] <- [
 
-	"spinner" : [
+	"spinner" => [
 		[0 0 0 0 0]
 		[0 0 1 0 0]
 		[0 0 1 0 0]
@@ -136,7 +136,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0]
 	]
 
-	"glider" : [
+	"glider" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
@@ -159,7 +159,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"average" : [
+	"average" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 1 1 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 1 1 1 0 0 0 0 0 0 0]
@@ -175,7 +175,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"antiphasewhybother" : [
+	"antiphasewhybother" => [
 		[0 0 0 0 0 0 0 0 0 0 ]
 		[0 0 0 0 0 1 0 0 0 0 ]
 		[0 0 0 1 0 1 0 0 0 0 ]
@@ -187,7 +187,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 ]
 	]
 	
-	"achimsp144" : [
+	"achimsp144" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0]
@@ -213,7 +213,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"t13stable" : [
+	"t13stable" => [
 		[0 0 0 0 1 1]
 		[0 1 1 0 0 1]
 		[0 0 1 1 1 0]
@@ -222,7 +222,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0]
 	]
 
-	"eyes" : [
+	"eyes" => [
 		[0 0 0 0 0 0 0 0 0 0]
 		[0 0 1 1 1 0 0 0 0 0]
 		[0 1 0 0 0 0 1 0 0 0]
@@ -244,28 +244,28 @@ const PRESETS [ Text : [[Int]] ] <- [
 
 "Welcome to Conway's game of life implementation in Giovi!" -> _out
 "Choose a preset:" -> _out
-for preset in PRESETS@@ do {
+for preset in PRESETS.@ do {
 	"$preset" -> _out
-	toBraille(PRESETS@preset) -> _out
+	toBraille(PRESETS.{preset}) -> _out
 }
 
-preset Text
+preset:Text
 repeat {
 	"> " ->+ _out
 	_in -> preset
-	if PRESETS =~ preset do break
+	if preset in PRESETS do break
 	"Sorry, the preset $preset is not available. Choose another" -> _out
 }
-currentGen [[Int]] <- PRESETS@preset
+currentGen:[[Int]] <- PRESETS.{preset}
 
-i Int
+i:Int
 "\u001B[2J" ->+ _out
 repeat {
 	"\u001B[H" ->+ _out
 	"-"^80 ->+ _out
 	"Generation: #$i" -> _out
 	toText(currentGen) -> _out
-	update(currentGen) -> nextGen [[Int]]
+	update(currentGen) -> nextGen:[[Int]]
 	if nextGen = currentGen do {
 		"Life has stabilized after $i generations" -> _out
 		break

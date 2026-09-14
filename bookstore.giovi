@@ -1,22 +1,22 @@
-Author <
-	name Text
-	surname Text
-	age Natural
+struct Author <
+	name:Text
+	surname:Text
+	age:Natural
 >
 
-Book <
-	title Text
-	description Text
-	author Author
-	price Real
-	pageCount Natural
+struct Book <
+	title:Text
+	description:Text
+	author:Author
+	price:Real
+	pageCount:Natural
 >
 
 #? Convert a list of book to text
 #? @param shelf - list of book
 #? @return list of text
-shelfToText(shelf [Book]) => [Text] {
-	books [Text]
+shelfToText(shelf:[Book]) => [Text] {
+	books:[Text]
 	for book in shelf do {
 		books +<- "{
 			Title:        ${book.title}
@@ -35,8 +35,8 @@ shelfToText(shelf [Book]) => [Text] {
 #? @brief Convert a list of book to a HTML table
 #? @param shelf - list of book
 #? @return text - html table
-shelfToHTML(shelf [Book]) => Text {
-	table Text <- "{
+shelfToHTML(shelf:[Book]) => Text {
+	table:Text <- "{
 		<table>
 			<thead>
 				<tr>
@@ -65,7 +65,7 @@ shelfToHTML(shelf [Book]) => Text {
 #? @brief Convert Book to a HTML table row
 #? @param book
 #? @return html table row
-toRowHTML(book Book) => Text {
+toRowHTML(book:Book) => Text {
 	=> "{
 		<tr>
 			<td>${book.title}</td>
@@ -79,50 +79,50 @@ toRowHTML(book Book) => Text {
 
 
 
-author1 Author <- <"Simone" "Vicinanza" 22n>
-author2 Author <- <"Mario" "Rossi" 35n>
-shelf [Book] <- [
+author1:Author <- <"Simone" "Vicinanza" 22n>
+author2:Author <- <"Mario" "Rossi" 35n>
+shelf:[Book] <- [
 	Book.<
-		title: "Giovi for dummies"
-		description: "A book describing very easily the Giovi"
-		author: author1
-		price: 0.0
-		pageCount: 69n
+		title="Giovi for dummies"
+		description="A book describing very easily the Giovi"
+		author=author1
+		price=0.0
+		pageCount=69n
 	>
 
 	Book.<
-		title: "How to make a new Language"
-		description: "{
+		title="How to make a new Language"
+		description="{
 			A step by step guide on how to build a new language from scratch
 			It even has pictures!!!
 			}"
-		author: author2
-		price: 6.9
-		pageCount: 420n
+		author=author2
+		price=6.9
+		pageCount=420n
 	>
 
 	Book.<
-		title: "How to make a new Language | 2 edition"
-		description: "{
+		title="How to make a new Language | 2 edition"
+		description="{
 			A step by step guide on how to build a new language from scratch
 			It even has pictures!!!
 			Revisioned edition
 			}"
-		author: author2
-		price: 4.2
-		pageCount: 690n
+		author=author2
+		price=4.2
+		pageCount=690n
 	>
 
 	Book.<
-		title: "Story of a bored programmer"
-		description: "Biography of a bored programmer"
-		author: Author.<
-				name: "Luigi"
-				surname: "Bianchi"
-				age: 55n
+		title="Story of a bored programmer"
+		description="Biography of a bored programmer"
+		author=Author.<
+				name="Luigi"
+				surname="Bianchi"
+				age=55n
 		>
-		price: 10.5
-		pageCount: 120n
+		price=10.5
+		pageCount=120n
 	>
 ]
 
