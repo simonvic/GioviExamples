@@ -1,5 +1,10 @@
 # GioviSpecs 0.56
 
+import giovi.util.Ansi as Ansi
+
+#? When enabled, ansi escape codes will be used to redraw the output
+const REDRAW Bool <- true
+
 #? When enabled, gradient life stages will be used.
 const USE_GRADIENTS Bool <- true
 
@@ -259,9 +264,9 @@ repeat {
 currentGen [[Int]] <- PRESETS.{presetName}
 
 i Int
-"\u001B[2J" ->+ _out
+if REDRAW do Ansi.erase(2) ->+ _out
 repeat {
-	"\u001B[H" ->+ _out
+	if REDRAW do Ansi.moveTo(0, 0) ->+ _out
 	"-"^80 ->+ _out
 	"Generation: #$i" -> _out
 	toText(currentGen) -> _out
