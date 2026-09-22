@@ -93,7 +93,7 @@ Color <
 	b Int
 >
 
-Color : ColorRGBA <a Int>
+Color + ColorRGBA <a Int>
 
 => <a b<c d>
 => <a {b>c} d>
