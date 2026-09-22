@@ -64,7 +64,7 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 	# init mst with all orphans
 	for u in graph do [u : ""] ->+ mst
 
-	repeat if queue@% != 0 {
+	repeat if queue@_count != 0 {
 		"\nqueue: $queue" -> _out
 
 		# Extract vertex with minimum cost from the queue
@@ -125,7 +125,7 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 	}
 	"unique $edges" -> _out
 	sorted [[Text ** 2]]
-	repeat if edges@% != 0 do {
+	repeat if edges@_count != 0 do {
 		minCost Int <- INF
 		minEdge [Text ** 2]
 		for u : [v : cost] in edges do {

@@ -38,7 +38,7 @@ p(jobIndex Int, jobs [Job]) => Int {
 #? @return sorted jobs
 sortByFinishTimeInc(jobs [Job]) => [Job] {
 	sorted [Job]
-	repeat if jobs@% != 0 {
+	repeat if jobs@_count != 0 {
 		max Job <- jobs@0
 		for job in jobs do {
 			if job.finish < max.finish do {
@@ -132,7 +132,7 @@ solve(jobs [Job]) => [Job] {
 			memo@{i - 1}
 		)
 	]
-	=> findSolution(jobs@% - 1, [])
+	=> findSolution(jobs@_count - 1, [])
 }
 
 #? PostProcess function to find solution in memoization table
@@ -189,9 +189,9 @@ for i in jobs@@ do pCache +<- [i : p(i, jobs)]
 
 "{
 Computing optimal value...
-optRecursive() = ${optRecursive(jobs@% - 1)}
-optMemo()      = ${optMemo(jobs@% - 1)}
-optMemoIter()  = ${optMemoIter(jobs@% - 1)}
+optRecursive() = ${optRecursive(jobs@_count - 1)}
+optMemo()      = ${optMemo(jobs@_count - 1)}
+optMemoIter()  = ${optMemoIter(jobs@_count - 1)}
 }" -> _out
 
 "Finding solution..." -> _out

@@ -50,8 +50,8 @@ toText(state [[Int]]) => Text {
 #? @return text
 toBraille(state [[Int]]) => Text {
 	output Text
-	rows Int <- state@%
-	columns Int <- state@0@%
+	rows Int <- state@_count
+	columns Int <- state@0@_count
 
 	# Iterate 3x2 chunks (a single braille char)
 	for chunkRowIdx in 0..rows-1..3 do {
@@ -92,11 +92,11 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 		colDir Int <- dir@1
 		neighbourRowIdx Int <- rowIdx + rowDir
 		if neighbourRowIdx {
-			< 0 | >= state@% do skip
+			< 0 | >= state@_count do skip
 		}
 		neighbourColIdx Int <- colIdx + colDir
 		if neighbourColIdx {
-			< 0 | >= state@neighbourRowIdx@% do skip
+			< 0 | >= state@neighbourRowIdx@_count do skip
 		}
 
 		if state@neighbourRowIdx@neighbourColIdx >= 1 do {

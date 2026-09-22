@@ -68,8 +68,8 @@ State <
 	#? @return text
 	self toBraille() => Text {
 		output Text
-		rows Int <- self.state@%
-		columns Int <- self.state@0@%
+		rows Int <- self.state@_count
+		columns Int <- self.state@0@_count
 
 		# Iterate 3x2 chunks (a single braille char)
 		for chunkRowIdx in 0..rows-1..3 do {
@@ -110,11 +110,11 @@ State <
 			colDir Int <- dir@1
 			neighbourRowIdx Int <- rowIdx + rowDir
 			if neighbourRowIdx {
-				< 0 | >= self.state@% do skip
+				< 0 | >= self.state@_count do skip
 			}
 			neighbourColIdx Int <- colIdx + colDir
 			if neighbourColIdx {
-				< 0 | >= self.state@neighbourRowIdx@% do skip
+				< 0 | >= self.state@neighbourRowIdx@_count do skip
 			}
 
 			if self.state@neighbourRowIdx@neighbourColIdx >= 1 do {

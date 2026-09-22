@@ -127,7 +127,7 @@ produce(machine Machine, conf Configuration) => Configuration {
 	}
 
 	newState State <- machine.states@{transition.newStateLabel}
-	=> Configuration.<newTape, newPointer, newTape@% , newState>
+	=> Configuration.<newTape, newPointer, newTape@_count , newState>
 }
 
 ################################################################################
@@ -371,7 +371,7 @@ const STATES_PRESETS [Text : [Text : State]] <- [
 machine Machine <- Machine.<states: STATES_PRESETS@"bitshift_right">
 
 tape [Text] <- "011001" / ""
-configuration Configuration <- Configuration.<tape, 0, tape@% , machine.states@"initial">
+configuration Configuration <- Configuration.<tape, 0, tape@_count , machine.states@"initial">
 
 prettyMachine(machine) -> _out
 "=== Computing" -> _out
