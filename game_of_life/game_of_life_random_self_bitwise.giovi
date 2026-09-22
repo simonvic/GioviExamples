@@ -1,0 +1,161 @@
+# GioviSpecs 0.56
+
+import [
+	giovi.util.Random as Random
+	giovi.util.Ansi as Ansi
+]
+
+#? Maximum amount of iteration to simulate before interrupting
+#? Use -1 for infinite iterations
+const MAX_ITERATION <- -1
+
+#? When enabled, ansi escape codes will be used to redraw the output
+const REDRAW <- true
+
+#? Character for each life stage from dead to alive
+const LIFE_STAGES [Text] <- [ "  " "░░" "▒▒" "▓▓" "██" ]
+
+const PRINT_RAW <- false
+
+#? Codex for traslating a 3x2 matrix into a braille character.
+#? Each braille character has its own binary representation
+#? https://en.wikipedia.org/wiki/Braille_ASCII which here is represented by the
+#? index in the string
+#? For example the character ⠬ is at index 13 which in binary corresponds to 00001101
+const CODEX <- "⠀⠠⠐⠰⠈⠨⠘⠸⠄⠤⠔⠴⠌⠬⠜⠼⠂⠢⠒⠲⠊⠪⠚⠺⠆⠦⠖⠶⠎⠮⠞⠾⠁⠡⠑⠱⠉⠩⠙⠹⠅⠥⠕⠵⠍⠭⠝⠽⠃⠣⠓⠳⠋⠫⠛⠻⠇⠧⠗⠷⠏⠯⠟⠿"
+
+#? Directions to use when checking for neighbours
+const DIRS <- [
+	[-1 -1]
+	[-1 0]
+	[-1 1]
+	[0 1]
+	[1 1]
+	[1 0]
+	[1 -1]
+	[0 -1]
+]
+
+struct State <
+
+	#? Actual state data
+	state [Int]
+
+	#? Convert the state in a pretty text
+	#? @param state
+	#? @return state
+	self toText() => Text {
+		output Text
+		for row in self.state do {
+			if PRINT_RAW do {
+				output +<- Int.toBinaryText(row)
+			} else {
+				for i in 31..0 do {
+					output +<- LIFE_STAGES.{{row {>} i} && 0b1}
+				}
+			}
+			"\n" ->+ output
+		}
+		=> output
+	}
+
+	self toTextNeigh() => Text {
+		output Text
+		for rowIdx in self.state._range do {
+			for colIdx in 31..0 do {
+				output +<- ""+self.countNeighbours(rowIdx, colIdx)
+			}
+			"\n" ->+ output
+		}
+		=> output
+	}
+
+	#? Count the alive neighbours of the specified cell
+	#? @param rowIdx row index of the cell to count neighbours of
+	#? @param colIdx column index of the cell to count neighbours of
+	#? @return count of alive neighbours
+	self countNeighbours(rowIdx Int, colIdx Int) => Int {
+		row Int <- self.state.{rowIdx}
+		rowPrev Int <- 0b0 # by default empty (dead) row
+		if rowIdx >= 1 do rowPrev <- self.state.{rowIdx - 1}
+		rowNext Int <- 0b0 # by default empty (dead) row
+		if rowIdx <= self.state._count - 2 do rowNext <- self.state.{rowIdx + 1}
+
+		count Int
+		count +<- {rowPrev {>>} {colIdx - 1}} && 0b1 # north-east
+		count +<- {rowPrev {>>} {colIdx + 0}} && 0b1 # north
+		count +<- {rowPrev {>>} {colIdx + 1}} && 0b1 # north-west
+		count +<- {row     {>>} {colIdx - 1}} && 0b1 # east
+		count +<- {row     {>>} {colIdx + 1}} && 0b1 # west
+		count +<- {rowNext {>>} {colIdx - 1}} && 0b1 # south-east
+		count +<- {rowNext {>>} {colIdx + 0}} && 0b1 # south
+		count +<- {rowNext {>>} {colIdx + 1}} && 0b1 # south-west
+
+		=> count
+	}
+
+	#? Simuluate the generation and update the state
+	#? @param state current generation state
+	#? @return next generation state
+	self update() => State {
+		out [Int] <- self.state
+		for rowIdx in self.state._range do {
+			for colIdx in 31..0 do {
+				if self.countNeighbours(rowIdx, colIdx) {
+					# birth
+					= 3 do out.{rowIdx} <- out.{rowIdx} || {0b1 {<} colIdx}
+
+					# death
+					< 2 or >= 4 do out.{rowIdx} <- out.{rowIdx} && !!{0b1 {<} colIdx}
+				}
+
+			}
+		}
+		=> <out>
+	}
+
+>
+
+################################################################################
+
+"{
+Welcome to Conway's game of life implementation in Giovi!
+https://en.wikipedia.org/wiki/Conway's_Game_of_Life
+}" -> _out
+
+
+rows Int <- 32
+state [Int ** rows]
+<state> -> currentGen State
+
+Ansi.erase(2) ->+ _out
+for r in 0..rows - 1 do {
+	currentGen.state.{r} <- Random.integer()
+}
+
+# for row in currentGen.state do row -> _out
+"Starting generation:" -> _out
+# currentGen.toBraille() -> _out
+currentGen.toText() -> _out
+# currentGen.toTextNeigh() -> _out
+
+"Press enter to start simulation" ->+ _out
+_in -> _out
+i Int
+if REDRAW do Ansi.erase(2) ->+ _out
+repeat {
+	if REDRAW do Ansi.moveTo(0, 0) ->+ _out
+	"-"^80 ->+ _out
+	"Generation: #$i" -> _out
+	#currentGen.toBraille() -> _out
+	currentGen.toText() -> _out
+	# currentGen.toTextNeigh() -> _out
+	currentGen.update() -> nextGen State
+	if nextGen = currentGen do {
+		"Life has stabilized after $i generations" -> _out
+		break
+	}
+	currentGen <- nextGen
+	i +<- 1
+	if i = MAX_ITERATION do break
+}
