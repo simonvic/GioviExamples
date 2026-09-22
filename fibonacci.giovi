@@ -32,9 +32,9 @@ fibonacciBottomUp(n Int) => Int {
 #? @param n = value of fibonacci to find
 #? @return fibonacci sequence at n
 fibonacciAssociativeMemoIter(n Int) => Int {
-	cache [Int : Int] <- [ 1:1 2:1 ]
+	cache [Int => Int] <- [ 1=>1 2=>1 ]
 	for i in 3..n do {
-		cache +<- [ i : cache.{i - 1} + cache.{i - 2} ]
+		cache +<- [ i => cache.{i - 1} + cache.{i - 2} ]
 	}
 	=> cache.{n};
 }

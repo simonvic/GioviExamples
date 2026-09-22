@@ -131,9 +131,9 @@ update(state [[Int]]) => [[Int]] {
 }
 
 #? Initial state presets
-const PRESETS [ Text : [[Int]] ] <- [
+const PRESETS [ Text => [[Int]] ] <- [
 
-	"spinner" : [
+	"spinner" => [
 		[0 0 0 0 0]
 		[0 0 1 0 0]
 		[0 0 1 0 0]
@@ -141,7 +141,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0]
 	]
 
-	"glider" : [
+	"glider" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
@@ -164,7 +164,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"average" : [
+	"average" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 1 1 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 1 1 1 0 0 0 0 0 0 0]
@@ -180,7 +180,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"antiphasewhybother" : [
+	"antiphasewhybother" => [
 		[0 0 0 0 0 0 0 0 0 0 ]
 		[0 0 0 0 0 1 0 0 0 0 ]
 		[0 0 0 1 0 1 0 0 0 0 ]
@@ -192,7 +192,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 ]
 	]
 	
-	"achimsp144" : [
+	"achimsp144" => [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 		[0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0]
@@ -218,7 +218,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	]
 
-	"t13stable" : [
+	"t13stable" => [
 		[0 0 0 0 1 1]
 		[0 1 1 0 0 1]
 		[0 0 1 1 1 0]
@@ -227,7 +227,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 		[0 0 0 0 0 0]
 	]
 
-	"eyes" : [
+	"eyes" => [
 		[0 0 0 0 0 0 0 0 0 0]
 		[0 0 1 1 1 0 0 0 0 0]
 		[0 1 0 0 0 0 1 0 0 0]
@@ -249,7 +249,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 
 "Welcome to Conway's game of life implementation in Giovi!" -> _out
 "Choose a preset:" -> _out
-for presetName : preset in PRESETS do {
+for presetName => preset in PRESETS do {
 	"$presetName" -> _out
 	toBraille(preset) -> _out
 }

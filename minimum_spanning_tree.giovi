@@ -5,9 +5,9 @@ const INF Int <- 99999999
 #? Extract the minimum from a (fake) priority queue
 #? @param queue
 #? @return minimum edge
-extractMin(queue [Text : Int]) => Text {
+extractMin(queue [Text => Int]) => Text {
 	min Text <- queue._keys.0
-	for u : cost in queue do {
+	for u => cost in queue do {
 		if cost < queue.{min} do min <- u
 	}
 	if min != default do {
@@ -18,10 +18,10 @@ extractMin(queue [Text : Int]) => Text {
 
 #? Print graph
 #? @param graph (adjacency list)
-printGraph(graph [Text : [Text : Int]]) {
+printGraph(graph [Text => [Text => Int]]) {
 	"Edges: $graph" -> _out
-	for u : edges in graph do {
-		for v : cost in edges do {
+	for u => edges in graph do {
+		for v => cost in edges do {
 			"$u <--$cost--> $v" -> _out
 		}
 		"" -> _out
@@ -29,11 +29,11 @@ printGraph(graph [Text : [Text : Int]]) {
 }
 
 #? Print MST
-#? @param mst [child : parent]
-printMST(mst [Text : Text]) {
+#? @param mst child => parent
+printMST(mst [Text => Text]) {
 	"MST: " -> _out
 	mstCost Int
-	for child : parent in mst do {
+	for child => parent in mst do {
 		if parent = "" do {
 			child -> _out
 		} else {
@@ -48,21 +48,21 @@ printMST(mst [Text : Text]) {
 #? by holding unexplored nodes in a priority queue with cost to reach it as key;
 #? while queue is not empty, find cheapest edge and add it to the MST
 #? @param graph (adjacency list)
-#? @return mst [child : parent]
-prim(graph [Text : [Text : Int]]) => [Text : Text] {
+#? @return mst child => parent
+prim(graph [Text => [Text => Int]]) => [Text => Text] {
 
 	# (Fake) priority queue, with cost as key
-	queue [Text : Int]
+	queue [Text => Int]
 	# init queue with infinite cost
-	for u : edges in graph do queue +<- [u : INF]
+	for u => edges in graph do queue +<- [u => INF]
 
 	# List of explored nodes
 	explored [Text]
 
-	# MST represented with child:parent map
-	mst [Text : Text]
+	# MST represented with child=>parent map
+	mst [Text => Text]
 	# init mst with all orphans
-	for u in graph do [u : ""] ->+ mst
+	for u in graph do [u => ""] ->+ mst
 
 	repeat if queue._count != 0 {
 		"\nqueue: $queue" -> _out
@@ -72,7 +72,7 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 		min ->- queue
 		min ->+ explored
 
-		graph.{min} -> exitingEdgesFromMin [Text : Int]
+		graph.{min} -> exitingEdgesFromMin [Text => Int]
 
 		# Print exiting edges
 		"min: $min" -> _out
@@ -81,10 +81,10 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 			"\t<--${exitingEdgesFromMin.{v}}--> $v" -> _out
 		}
 
-		for v : cost in exitingEdgesFromMin do {
+		for v => cost in exitingEdgesFromMin do {
 			if v ~= explored do skip
 			if cost < queue.{v} do {
-				[v : cost] ->+ queue
+				[v => cost] ->+ queue
 				mst.{v} <- min
 			}
 		}
@@ -94,23 +94,23 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 }
 
 # Kruskall
-makeSingletonComponents(graph [Text : [Text : Int]]) => [[Text]] {
+makeSingletonComponents(graph [Text => [Text => Int]]) => [[Text]] {
 	components [[Text]]
 	for u in graph do [u] ->+ components
-	#for u : [v : edges] in graph do {
+	#for u => [v => edges] in graph do {
 	#	if [u] ~= components do skip
 	#	[[u]] ->+ components
 	#}
 	=> components
 }
 
-getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
+getEdgesOrderedByIncreasingCost(graph [Text => [Text => Int]]) => [[Text]] {
 	#"Ordering $graph" -> _out
-	edges [Text : [Text : Int]]
-	for u : [v : cost] in graph do {
+	edges [Text => [Text => Int]]
+	for u => [v => cost] in graph do {
 		if v in edges do skip
 		found Bool
-		for o : [w : _] in edges do {
+		for o => [w => _] in edges do {
 			if u = o and v in w do {
 				found <- true
 				break
@@ -118,9 +118,9 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 		}
 		if found do skip
 		if u in edges do {
-			[v : cost] ->+ edges.{u}
+			[v => cost] ->+ edges.{u}
 		} else {
-			[u : [v : cost]] ->+ edges
+			[u => [v => cost]] ->+ edges
 		}
 	}
 	"unique $edges" -> _out
@@ -128,7 +128,7 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 	repeat if edges._count != 0 do {
 		minCost Int <- INF
 		minEdge [Text ** 2]
-		for u : [v : cost] in edges do {
+		for u => [v => cost] in edges do {
 			if cost < minCost do {
 				cost -> minCost
 				[u v] -> minEdge
@@ -142,21 +142,21 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 	=> sorted
 
 	# Old
-	#for u : edge in graph do {
-	#	for v : cost in edge do {
+	#for u => edge in graph do {
+	#	for v => cost in edge do {
 	#		if edges =~ u & edges.{u} =~ v & cost < edges.{u}.{v} do {
 	#			cost -> edges.{u}.{v}
 	#		} else if edges =~ v & edges.{v} =~ u & cost < edges.{v}.{u} do {
 	#			cost -> edges.{v}.{u}
 	#		} else {
-	#			[u : [v : cost]] ->+ edges
+	#			[u => [v => cost]] ->+ edges
 	#		}
 	#	}
 	#}
-	#t [Text : Text]
-	#for u : edge in edges do {
+	#t [Text => Text]
+	#for u => edge in edges do {
 	#	for v in edge do {
-	#		[u : v] ->+ t
+	#		[u => v] ->+ t
 	#	}
 	#}
 	#=> t
@@ -181,19 +181,19 @@ mergeComponents(u Text, v Text, components [[Text]]) => [[Text]] {
 	=> merged
 }
 
-kruskall(graph [Text : [Text : Int]]) => [Text : Text] {
+kruskall(graph [Text => [Text => Int]]) => [Text => Text] {
 	getEdgesOrderedByIncreasingCost(graph) -> edges [[Text]]
 
 	makeSingletonComponents(graph) -> components [[Text]]
 	"components $components" -> _out
-	mst [Text : Text]
+	mst [Text => Text]
 	for edge in edges do {
 		u Text <- edge.0
 		v Text <- edge.1
 		# if they're in the same connected component, adding the edge would
 		# cause a cycle
 		if findComponent(u, components) = findComponent(v, components) do skip
-		[u : v] ->+ mst
+		[u => v] ->+ mst
 		mergeComponents(u, v, components) -> components
 		"components: $components" -> _out
 	}
@@ -201,14 +201,14 @@ kruskall(graph [Text : [Text : Int]]) => [Text : Text] {
 }
 
 # Graph represented via adjacency list
-# u : [v : cost]
-graph [Text : [Text : Int]] <- [
-	"a" : ["b":5 "e":3]
-	"b" : ["a":5 "c":1 "d":9 "f":2]
-	"c" : ["b":1 "e":6]
-	"d" : ["b":9 "e":7]
-	"e" : ["a":3 "c":6 "d":7 "f":8]
-	"f" : ["b":2 "e":8]
+# u => [v => cost]
+graph [Text => [Text => Int]] <- [
+	"a" => ["b"=>5 "e"=>3]
+	"b" => ["a"=>5 "c"=>1 "d"=>9 "f"=>2]
+	"c" => ["b"=>1 "e"=>6]
+	"d" => ["b"=>9 "e"=>7]
+	"e" => ["a"=>3 "c"=>6 "d"=>7 "f"=>8]
+	"f" => ["b"=>2 "e"=>8]
 ]
 
 printGraph(graph)
@@ -221,7 +221,7 @@ repeat {
 		2) Kruskall
 	> }" ->+ _out
 	_in -> algorithm Text
-	mst [Text : Text]
+	mst [Text => Text]
 	if algorithm {
 		= "0" do break;
 		= "1" do prim(graph) -> mst

@@ -41,7 +41,7 @@ r Real default 6.9
 b Bool default true
 t Text default "hello world"
 l [Int] default [0..9]
-m [Text:Int] default ["a":0]
+m [Text=>Int] default ["a"=>0]
 
 _out <- _in
 _out <- default
@@ -80,9 +80,9 @@ at [Text] <- [
 	}',
 ]
 
-maps [Text : Int] <- [
-	"a" : 69
-	"b" : 420
+maps [Text => Int] <- [
+	"a" => 69
+	"b" => 420
 ]
 
 ################################################################################ Tuples and structs
@@ -222,8 +222,8 @@ for i in 0..10 do {
 
 }
 for _ in 0..10 do skip
-for k : v in map do {}
-for k : [v : w] in map do {}
+for k => v in map do {}
+for k => [v => w] in map do {}
 for color <r, g, b> in listOfColors do {}
 
 a  <- b

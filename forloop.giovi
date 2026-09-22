@@ -87,10 +87,10 @@ for <_:y, z:z <_:b, _:a, _:c>, _:x> in listOfNestedStruct do "<$x $y $z <$a $b $
 
 
 "\n-------------------------------------------------------------------------------" -> _out
-map [Text : Int] <- [
-	"a" : 1
-	"b" : 2
-	"c" : 3
+map [Text => Int] <- [
+	"a" => 1
+	"b" => 2
+	"c" => 3
 ]
 "iterating map: $map" -> _out
 
@@ -103,86 +103,86 @@ for k in map}" -> _out
 for k in map do k -> _out
 
 "{\n
-for k : _ in map}" -> _out
-for k : _ in map do "$k : _" -> _out
+for k => _ in map}" -> _out
+for k => _ in map do "$k => _" -> _out
 
 "{\n
-for _ : v in map}" -> _out
-for _ : v in map do "_ : $v" -> _out
+for _ => v in map}" -> _out
+for _ => v in map do "_ => $v" -> _out
 
 "{\n
-for k : v in map}" -> _out
-for k : v in map do "$k : $v" -> _out
+for k => v in map}" -> _out
+for k => v in map do "$k => $v" -> _out
 
 "{\n
-for k Text : v Int in map}" -> _out
-for k Text : v Int in map do "$k : $v" -> _out
+for k Text => v Int in map}" -> _out
+for k Text => v Int in map do "$k => $v" -> _out
 
 
 
 "\n-------------------------------------------------------------------------------" -> _out
-mapWithStructValue [Text : Foo] <- [
-	"a" : Foo.<1,   2,   3>,
-	"b" : Foo.<10,  20,  30>,
-	"c" : Foo.<100, 200, 300>
+mapWithStructValue [Text => Foo] <- [
+	"a" => Foo.<1,   2,   3>,
+	"b" => Foo.<10,  20,  30>,
+	"c" => Foo.<100, 200, 300>
 ]
 "iterating map of value Struct: $mapWithStructValue" -> _out
 
 "{\n
-for k : <a, b, c> in mapWithStructValue}" -> _out
-for k : <a, b, c> in mapWithStructValue do "$k : <$a $b $c>" -> _out
+for k => <a, b, c> in mapWithStructValue}" -> _out
+for k => <a, b, c> in mapWithStructValue do "$k => <$a $b $c>" -> _out
 
 "{\n
-for k : v <a, b, c> in mapWithStructValue}" -> _out
-for k : v <a, b, c> in mapWithStructValue do "$k : $v <$a $b $c>" -> _out
+for k => v <a, b, c> in mapWithStructValue}" -> _out
+for k => v <a, b, c> in mapWithStructValue do "$k => $v <$a $b $c>" -> _out
 
 
 
 "\n-------------------------------------------------------------------------------" -> _out
-mapWithStructKey [Foo : Int] <- [
-	Foo.<1,   2,   3>   : 4,
-	Foo.<10,  20,  30>  : 40,
-	Foo.<100, 200, 300> : 400
+mapWithStructKey [Foo => Int] <- [
+	Foo.<1,   2,   3>   => 4,
+	Foo.<10,  20,  30>  => 40,
+	Foo.<100, 200, 300> => 400
 ]
 "iterating map of key Struct: $mapWithStructKey" -> _out
 
 "{\n
-for <a, b, c> : v in mapWithStructKey}" -> _out
-for <a, b, c> : v in mapWithStructKey do "<$a $b $c> : $v" -> _out
+for <a, b, c> => v in mapWithStructKey}" -> _out
+for <a, b, c> => v in mapWithStructKey do "<$a $b $c> => $v" -> _out
 
 "{\n
-for k <a, b, c> : v in mapWithStructKey}" -> _out
-for k <a, b, c> : v in mapWithStructKey do "$k <$a $b $c> : $v" -> _out
+for k <a, b, c> => v in mapWithStructKey}" -> _out
+for k <a, b, c> => v in mapWithStructKey do "$k <$a $b $c> => $v" -> _out
 
 
 
 "\n-------------------------------------------------------------------------------" -> _out
-mapWithStructPair [Foo : Bar] <- [
-	Foo.<1,   2,   3>   : Bar.<4,   5,   Foo.<6,   7,   8>>,
-	Foo.<10,  20,  30>  : Bar.<40,  50,  Foo.<60,  70,  80>>,
-	Foo.<100, 200, 300> : Bar.<400, 500, Foo.<600, 700, 800>>,
+mapWithStructPair [Foo => Bar] <- [
+	Foo.<1,   2,   3>   => Bar.<4,   5,   Foo.<6,   7,   8>>,
+	Foo.<10,  20,  30>  => Bar.<40,  50,  Foo.<60,  70,  80>>,
+	Foo.<100, 200, 300> => Bar.<400, 500, Foo.<600, 700, 800>>,
 ]
 "iterating map of pair Struct: $mapWithStructPair" -> _out
 
 "{\n
-for <a, b, c> : <x, y, z> in mapWithStructPair}" -> _out
-for <a, b, c> : <x, y, z> in mapWithStructPair do "<$a $b $c> : <$x $y $z>" -> _out
+for <a, b, c> => <x, y, z> in mapWithStructPair}" -> _out
+for <a, b, c> => <x, y, z> in mapWithStructPair do "<$a $b $c> => <$x $y $z>" -> _out
 
 "{\n
-for k <a, b, c> : v <x, y, z> in mapWithStructPair}" -> _out
-for k <a, b, c> : v <x, y, z> in mapWithStructPair do "$k <$a $b $c> : $v <$x $y $z>" -> _out
+for k <a, b, c> => v <x, y, z> in mapWithStructPair}" -> _out
+for k <a, b, c> => v <x, y, z> in mapWithStructPair do "$k <$a $b $c> => $v <$x $y $z>" -> _out
 
 
 
 "\n-------------------------------------------------------------------------------" -> _out
-mapWithMapValue [Text : [Text : Int]] <- [
-	"a" : ["x":1   "y":2   "z":3]
-	"b" : ["x":10  "y":20  "z":30]
-	"c" : ["x":100 "y":200 "z":300]
+mapWithMapValue [Text => [Text => Int]] <- [
+	"a" => ["x"=>1   "y"=>2   "z"=>3]
+	"b" => ["x"=>10  "y"=>20  "z"=>30]
+	"c" => ["x"=>100 "y"=>200 "z"=>300]
 ]
 "iterating map with value map: $mapWithMapValue" -> _out
 "{\n
-for k : [k2 : v] in mapWithMapValue}" -> _out
-for k : [k2 : v] in mapWithMapValue do "$k : $k2 : $v" -> _out
+for k => [k2 => v] in mapWithMapValue}" -> _out
+for k => [k2 => v] in mapWithMapValue do "$k => $k2 => $v" -> _out
 
 "\n-------------------------------------------------------------------------------" -> _out

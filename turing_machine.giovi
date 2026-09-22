@@ -37,14 +37,14 @@ State <
 	label Text
 
 	#? Exiting edges from the state based on the input mapped to a transition
-	#           input : transition
-	transitions [Text : Transition]
+	#           input => transition
+	transitions [Text => Transition]
 >
 
 #? Turing machine
 Machine <
 	#? States mapped by their label
-	states [Text : State]
+	states [Text => State]
 >
 
 #? Current configuration of the machine
@@ -67,9 +67,9 @@ Configuration <
 #? @return pretty text
 prettyMachine(machine Machine) => Text {
 	"=== Machine\n" -> pretty Text
-	for label : state in machine.states do {
+	for label => state in machine.states do {
 		"- $label\n" ->+ pretty
-		for input : transition in state.transitions do {
+		for input => transition in state.transitions do {
 			"|--($input -> ${transition.output},${transition.direction})--> ${transition.newStateLabel}\n" ->+ pretty
 		}
 		"\n" ->+ pretty
@@ -132,238 +132,238 @@ produce(machine Machine, conf Configuration) => Configuration {
 
 ################################################################################
 
-const STATES_PRESETS [Text : [Text : State]] <- [
+const STATES_PRESETS [Text => [Text => State]] <- [
 
-	"bitflip" : [
-		"initial" : State.<"initial", [
-			"0" : <"1" R "initial">,
-			"1" : <"0" R "initial">,
-			"_" : <"_" L "q1">,
+	"bitflip" => [
+		"initial" => State.<"initial", [
+			"0" => <"1" R "initial">,
+			"1" => <"0" R "initial">,
+			"_" => <"_" L "q1">,
 		]>
-		"q1" : State.<"q1", [
-			"0" : <"0" L "accept">,
-			"1" : <"1" L "accept">,
-			"_" : <"_" L "accept">,
+		"q1" => State.<"q1", [
+			"0" => <"0" L "accept">,
+			"1" => <"1" L "accept">,
+			"_" => <"_" L "accept">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	],
 
 	#?
 	# f(x, y) = x + y; x,y € N0;
 	# input: w0z; w,z base 1 representation of x and y
 	# output: wz0
-	"unary_sum" : [
-		"initial" : State.<"initial", [
-			"1" : <"_" R "q1">,
+	"unary_sum" => [
+		"initial" => State.<"initial", [
+			"1" => <"_" R "q1">,
 		]>
-		"q1" : State.<"q1", [
-			"1" : <"1" R "q1">,
-			"0" : <"1" R "q2">,
+		"q1" => State.<"q1", [
+			"1" => <"1" R "q1">,
+			"0" => <"1" R "q2">,
 		]>
-		"q2" : State.<"q2", [
-			"1" : <"1" R "q2">,
-			"_" : <"_" L "q3">,
+		"q2" => State.<"q2", [
+			"1" => <"1" R "q2">,
+			"_" => <"_" L "q3">,
 		]>
-		"q3" : State.<"q3", [
-			"1" : <"0" L "q4">,
+		"q3" => State.<"q3", [
+			"1" => <"0" L "q4">,
 		]>
-		"q4" : State.<"q4", [
-			"1" : <"1" L "q4">,
-			"_" : <"1" R "q5">,
+		"q4" => State.<"q4", [
+			"1" => <"1" L "q4">,
+			"_" => <"1" R "q5">,
 		]>
-		"q5" : State.<"q5", [
-			"1" : <"1" L "accept">,
-			"0" : <"0" L "accept">,
+		"q5" => State.<"q5", [
+			"1" => <"1" L "accept">,
+			"0" => <"0" L "accept">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 	#?
 	# f(x, y) = x - y; x,y € N0; x >= y
 	# input: w0z; w,z base 1 representation of x and y
 	# output: wz0
-	"unary_dif" : [
-		"initial" : State.<"initial", [
-			"0" : <"0" R "initial">,
-			"1" : <"1" R "initial">,
-			"_" : <"_" L "b">,
+	"unary_dif" => [
+		"initial" => State.<"initial", [
+			"0" => <"0" R "initial">,
+			"1" => <"1" R "initial">,
+			"_" => <"_" L "b">,
 		]>
-		"b" : State.<"b", [
-			"0" : <"0" L "accept">,
-			"1" : <"_" L "c">,
+		"b" => State.<"b", [
+			"0" => <"0" L "accept">,
+			"1" => <"_" L "c">,
 		]>
-		"c" : State.<"c", [
-			"1" : <"1" L "c">,
-			"0" : <"0" L "d">,
+		"c" => State.<"c", [
+			"1" => <"1" L "c">,
+			"0" => <"0" L "d">,
 		]>
-		"d" : State.<"d", [
-			"0" : <"0" L "d">,
-			"1" : <"0" L "initial">,
+		"d" => State.<"d", [
+			"0" => <"0" L "d">,
+			"1" => <"0" L "initial">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 	#? Right bitshift
-	"bitshift_right" : [
-		"initial" : State.<"initial", [
-			"0" : <"0" R "initial">,
-			"1" : <"1" R "initial">,
-			"_" : <"_" L "b">,
+	"bitshift_right" => [
+		"initial" => State.<"initial", [
+			"0" => <"0" R "initial">,
+			"1" => <"1" R "initial">,
+			"_" => <"_" L "b">,
 		]>
-		"b" : State.<"b", [
-			"0" : <"_" R "c">,
-			"1" : <"_" R "d">,
-			"_" : <"0" L "accept">,
+		"b" => State.<"b", [
+			"0" => <"_" R "c">,
+			"1" => <"_" R "d">,
+			"_" => <"0" L "accept">,
 		]>
-		"c" : State.<"c", [
-			"_" : <"0" L "e">,
+		"c" => State.<"c", [
+			"_" => <"0" L "e">,
 		]>
-		"d" : State.<"d", [
-			"_" : <"1" L "e">,
+		"d" => State.<"d", [
+			"_" => <"1" L "e">,
 		]>
-		"e" : State.<"e", [
-			"_" : <"_" L "b">,
+		"e" => State.<"e", [
+			"_" => <"_" L "b">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 	#? Increase by one
-	"bit_increment" : [
-		"initial" : State.<"initial", [
-			"0" : <"0" R "initial">,
-			"1" : <"1" R "initial">,
-			"_" : <"_" L "b">,
+	"bit_increment" => [
+		"initial" => State.<"initial", [
+			"0" => <"0" R "initial">,
+			"1" => <"1" R "initial">,
+			"_" => <"_" L "b">,
 		]>
-		"b" : State.<"b", [
-			"1" : <"1" L "b">,
-			"0" : <"1" R "c">,
+		"b" => State.<"b", [
+			"1" => <"1" L "b">,
+			"0" => <"1" R "c">,
 		]>
-		"c" : State.<"c", [
-			"0" : <"0" R "c">,
-			"1" : <"0" R "c">,
-			"_" : <"_" L "accept">,
+		"c" => State.<"c", [
+			"0" => <"0" R "c">,
+			"1" => <"0" R "c">,
+			"_" => <"_" L "accept">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 	#? Indefinitely increase by one
-	"bit_counter" : [
-		"initial" : State.<"initial", [
-			"0" : <"0" R "initial">,
-			"1" : <"1" R "initial">,
-			"_" : <"_" L "b">,
+	"bit_counter" => [
+		"initial" => State.<"initial", [
+			"0" => <"0" R "initial">,
+			"1" => <"1" R "initial">,
+			"_" => <"_" L "b">,
 		]>
-		"b" : State.<"b", [
-			"1" : <"1" L "b">,
-			"0" : <"1" R "c">,
+		"b" => State.<"b", [
+			"1" => <"1" L "b">,
+			"0" => <"1" R "c">,
 		]>
-		"c" : State.<"c", [
-			"0" : <"0" R "c">,
-			"1" : <"0" R "c">,
-			"_" : <"_" L "b">,
+		"c" => State.<"c", [
+			"0" => <"0" R "c">,
+			"1" => <"0" R "c">,
+			"_" => <"_" L "b">,
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 	#? #ababAbba# -> #ababaAbba#
 	#? #abababbA# -> #ababaabba°#
-	"esame" : [
-		"initial" : State.<"initial", [
-			"#" : <"#" R "initial">,
-			"a" : <"a" R "initial">,
-			"b" : <"b" R "initial">,
-			"A" : <"A" R "initial">,
-			"B" : <"B" R "initial">,
-			"_" : <"_" L "q1">,
+	"esame" => [
+		"initial" => State.<"initial", [
+			"#" => <"#" R "initial">,
+			"a" => <"a" R "initial">,
+			"b" => <"b" R "initial">,
+			"A" => <"A" R "initial">,
+			"B" => <"B" R "initial">,
+			"_" => <"_" L "q1">,
 		]>
-		"q1" : State.<"q1", [
-			"#" : <"#" L "q2">,
-			"a" : <"a" L "q2">,
-			"b" : <"b" L "q2">,
-			"A" : <"A" L "q2">,
-			"B" : <"B" L "q2">,
+		"q1" => State.<"q1", [
+			"#" => <"#" L "q2">,
+			"a" => <"a" L "q2">,
+			"b" => <"b" L "q2">,
+			"A" => <"A" L "q2">,
+			"B" => <"B" L "q2">,
 		]>
-		"q2" : State.<"q2", [
-			"A" : <"a" R "q3">
-			"B" : <"b" R "q3">
-			"a" : <"a" S "q8">
-			"b" : <"b" S "q8">
+		"q2" => State.<"q2", [
+			"A" => <"a" R "q3">
+			"B" => <"b" R "q3">
+			"a" => <"a" S "q8">
+			"b" => <"b" S "q8">
 		]>
-		"q8" : State.<"q8", [
-			"a" : <"_" R "q5">
-			"b" : <"_" R "q6">
-			"A" : <"a" R "q9">
-			"B" : <"b" R "q10">
+		"q8" => State.<"q8", [
+			"a" => <"_" R "q5">
+			"b" => <"_" R "q6">
+			"A" => <"a" R "q9">
+			"B" => <"b" R "q10">
 		]>
-		"q3" : State.<"q3", [
-			"#" : <"°" R "q4">
+		"q3" => State.<"q3", [
+			"#" => <"°" R "q4">
 		]>
-		"q4" : State.<"q4", [
-			"_" : <"#" R "accept">
+		"q4" => State.<"q4", [
+			"_" => <"#" R "accept">
 		]>
-		"q5" : State.<"q5", [
-			"#" : <"a" L "q7">
-			"_" : <"a" L "q7">
+		"q5" => State.<"q5", [
+			"#" => <"a" L "q7">
+			"_" => <"a" L "q7">
 		]>
-		"q6" : State.<"q6", [
-			"#" : <"b" L "q7">
-			"_" : <"b" L "q7">
+		"q6" => State.<"q6", [
+			"#" => <"b" L "q7">
+			"_" => <"b" L "q7">
 		]>
-		"q7" : State.<"q7", [
-			"_" : <"_" L "q8">
+		"q7" => State.<"q7", [
+			"_" => <"_" L "q8">
 		]>
-		"q9" : State.<"q9", [
-			"_" : <"A" L "q11">
+		"q9" => State.<"q9", [
+			"_" => <"A" L "q11">
 		]>
-		"q10" : State.<"q10", [
-			"_" : <"B" L "q11">
+		"q10" => State.<"q10", [
+			"_" => <"B" L "q11">
 		]>
-		"q11" : State.<"q11", [
-			"a" : <"a" R "q11">
-			"b" : <"b" R "q11">
-			"A" : <"A" R "q11">
-			"B" : <"B" R "q11">
-			"_" : <"#" S "accept">
+		"q11" => State.<"q11", [
+			"a" => <"a" R "q11">
+			"b" => <"b" R "q11">
+			"A" => <"A" R "q11">
+			"B" => <"B" R "q11">
+			"_" => <"#" S "accept">
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
-	"esame2" : [
-		"initial" : State.<"initial", [
-			"a" : <"a" R "initial">
-			"b" : <"X" S "q1">
+	"esame2" => [
+		"initial" => State.<"initial", [
+			"a" => <"a" R "initial">
+			"b" => <"X" S "q1">
 		]>
-		"q1" : State.<"q1", [
-			"X" : <"X" R "q2">
+		"q1" => State.<"q1", [
+			"X" => <"X" R "q2">
 		]>
-		"q2" : State.<"q2", [
-			"a" : <"a" R "q2">
-			"b" : <"b" R "q2">
-			"_" : <"_" L "q3">
+		"q2" => State.<"q2", [
+			"a" => <"a" R "q2">
+			"b" => <"b" R "q2">
+			"_" => <"_" L "q3">
 		]>
-		"q3" : State.<"q3", [
-			"a" : <"a" L "q4">
-			"b" : <"b" L "q4">
-			"X" : <"X" L "accept">
+		"q3" => State.<"q3", [
+			"a" => <"a" L "q4">
+			"b" => <"b" L "q4">
+			"X" => <"X" L "accept">
 		]>
-		"q4" : State.<"q4", [
-			"a" : <"a" L "q3">
-			"b" : <"b" L "q3">
-			"X" : <"X" L "q5">
+		"q4" => State.<"q4", [
+			"a" => <"a" L "q3">
+			"b" => <"b" L "q3">
+			"X" => <"X" L "q5">
 		]>
-		"q5" : State.<"q5", [
-			"a" : <"a" L "q5">
-			"b" : <"b" L "q5">
+		"q5" => State.<"q5", [
+			"a" => <"a" L "q5">
+			"b" => <"b" L "q5">
 		]>
-		"accept" : State.<label: "accept">,
-		"reject" : State.<label: "reject">,
+		"accept" => State.<label: "accept">,
+		"reject" => State.<label: "reject">,
 	]
 
 ]

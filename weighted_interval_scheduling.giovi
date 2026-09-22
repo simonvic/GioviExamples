@@ -89,7 +89,7 @@ optRecursive(j Int) => Real {
 
 #? Memoization table for the opt values
 #? We use a map for the sake of redeability
-memo [Int : Real] <- [-1 : 0]
+memo [Int => Real] <- [-1 => 0]
 
 #? Compute the optimal value recursively with the help of memoization
 #? @param j index of the job
@@ -97,7 +97,7 @@ memo [Int : Real] <- [-1 : 0]
 optMemo(j Int) => Real {
 	if memo =~ j do => memo.{j}
 	memo +<- [
-		j : maxValue(
+		j => maxValue(
 			jobs.{j}.value + optMemo(pCache.{j}),
 			optMemo(j - 1)
 		)
@@ -110,9 +110,9 @@ optMemo(j Int) => Real {
 #? @return optimal value for compatible jobs with j
 optMemoIter(j Int) => Real {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
-	[-1 : 0] -> memo [Int : Real]
+	[-1 => 0] -> memo [Int => Real]
 	for i in jobs._range do memo +<- [
-		i : maxValue(
+		i => maxValue(
 			jobs.{i}.value + memo.{pCache.{i}},
 			memo.{i - 1}
 		)
@@ -125,9 +125,9 @@ optMemoIter(j Int) => Real {
 #? @return optimal scheduling
 solve(jobs [Job]) => [Job] {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
-	[-1 : 0] -> memo [Int : Real]
+	[-1 => 0] -> memo [Int => Real]
 	for i in jobs._range do memo +<- [
-		i : maxValue(
+		i => maxValue(
 			jobs.{i}.value + memo.{pCache.{i}},
 			memo.{i - 1}
 		)
@@ -184,8 +184,8 @@ drawJobs(jobs)
 
 #? Cache of job index and p(job index)
 #? We use a map for the sake of redeability
-pCache [Int : Int]
-for i in jobs._range do pCache +<- [i : p(i, jobs)]
+pCache [Int => Int]
+for i in jobs._range do pCache +<- [i => p(i, jobs)]
 
 "{
 Computing optimal value...
