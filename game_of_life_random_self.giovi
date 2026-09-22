@@ -130,8 +130,8 @@ State <
 	#? @return next generation state
 	self update() => State {
 		out [[Int]] <- self.state
-		for rowIdx in self.state@@ do {
-			for colIdx in self.state@rowIdx@@ do {
+		for rowIdx in self.state@_range do {
+			for colIdx in self.state@rowIdx@_range do {
 				if self.countNeighbours(rowIdx, colIdx) {
 					= 3 do out@rowIdx@colIdx +<- 1;
 					< 2 | >= 4 do out@rowIdx@colIdx <- 0;

@@ -120,8 +120,8 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 #? @return next generation state
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
-	for rowIdx in state@@ do {
-		for colIdx in state@rowIdx@@ do {
+	for rowIdx in state@_range do {
+		for colIdx in state@rowIdx@_range do {
 			if countNeighbours(rowIdx, colIdx, state) {
 				= 3 do out@rowIdx@colIdx +<- 1
 				< 2 | >= 4 do out@rowIdx@colIdx <- 0

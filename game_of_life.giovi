@@ -112,9 +112,9 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 #? @return next generation state
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
-	for rowIdx in state@@ do {
+	for rowIdx in state@_range do {
 		state@rowIdx -> row [Int]
-		for colIdx in row@@ do {
+		for colIdx in row@_range do {
 			countNeighbours(rowIdx, colIdx, state) -> count Int
 			if count {
 				= 3 do out@rowIdx@colIdx +<- 1
@@ -244,7 +244,7 @@ const PRESETS [ Text : [[Int]] ] <- [
 
 "Welcome to Conway's game of life implementation in Giovi!" -> _out
 "Choose a preset:" -> _out
-for preset in PRESETS@@ do {
+for preset in PRESETS@_keys do {
 	"$preset" -> _out
 	toBraille(PRESETS@preset) -> _out
 }

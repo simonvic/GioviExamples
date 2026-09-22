@@ -6,7 +6,7 @@ const INF Int <- 99999999
 #? @param queue
 #? @return minimum edge
 extractMin(queue [Text : Int]) => Text {
-	min Text <- queue@@@0 # get first key
+	min Text <- queue@_keys@0
 	for u : cost in queue do {
 		if cost < queue@min do min <- u
 	}

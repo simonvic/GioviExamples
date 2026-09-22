@@ -111,7 +111,7 @@ optMemo(j Int) => Real {
 optMemoIter(j Int) => Real {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
-	for i in jobs@@ do memo +<- [
+	for i in jobs@_range do memo +<- [
 		i : maxValue(
 			jobs@i.value + memo@{pCache@i},
 			memo@{i - 1}
@@ -126,7 +126,7 @@ optMemoIter(j Int) => Real {
 solve(jobs [Job]) => [Job] {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
-	for i in jobs@@ do memo +<- [
+	for i in jobs@_range do memo +<- [
 		i : maxValue(
 			jobs@i.value + memo@{pCache@i},
 			memo@{i - 1}
@@ -185,7 +185,7 @@ drawJobs(jobs)
 #? Cache of job index and p(job index)
 #? We use a map for the sake of redeability
 pCache [Int : Int]
-for i in jobs@@ do pCache +<- [i : p(i, jobs)]
+for i in jobs@_range do pCache +<- [i : p(i, jobs)]
 
 "{
 Computing optimal value...
