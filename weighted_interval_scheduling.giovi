@@ -26,7 +26,7 @@ areOverlapping(j1 Job, j2 Job) => Bool {
 p(jobIndex Int, jobs [Job]) => Int {
 	if jobIndex < 1 do return -1
 	for index in jobIndex - 1 .. 0 do {
-		if not areOverlapping(jobs@jobIndex, jobs@index) do {
+		if not areOverlapping(jobs.{jobIndex}, jobs.{index}) do {
 			return index
 		}
 	}
@@ -38,8 +38,8 @@ p(jobIndex Int, jobs [Job]) => Int {
 #? @return sorted jobs
 sortByFinishTimeInc(jobs [Job]) => [Job] {
 	sorted [Job]
-	repeat if jobs@_count != 0 {
-		max Job <- jobs@0
+	repeat if jobs._count != 0 {
+		max Job <- jobs.0
 		for job in jobs do {
 			if job.finish < max.finish do {
 				job -> max
@@ -81,7 +81,7 @@ optRecursive(j Int) => Real {
 		=> 0r
 	} else {
 		=> maxValue(
-			jobs@j.value + optRecursive(pCache@j),
+			jobs.{j}.value + optRecursive(pCache.{j}),
 			optRecursive(j - 1)
 		)
 	}
@@ -95,14 +95,14 @@ memo [Int : Real] <- [-1 : 0]
 #? @param j index of the job
 #? @return optimal value for compatible jobs with j
 optMemo(j Int) => Real {
-	if memo =~ j do => memo@j
+	if memo =~ j do => memo.{j}
 	memo +<- [
 		j : maxValue(
-			jobs@j.value + optMemo(pCache@j),
+			jobs.{j}.value + optMemo(pCache.{j}),
 			optMemo(j - 1)
 		)
 	]
-	=> memo@j
+	=> memo.{j}
 }
 
 #? Compute the optimal value iteratively with the help of memoization
@@ -111,13 +111,13 @@ optMemo(j Int) => Real {
 optMemoIter(j Int) => Real {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
-	for i in jobs@_range do memo +<- [
+	for i in jobs._range do memo +<- [
 		i : maxValue(
-			jobs@i.value + memo@{pCache@i},
-			memo@{i - 1}
+			jobs.{i}.value + memo.{pCache.{i}},
+			memo.{i - 1}
 		)
 	]
-	=> memo@j
+	=> memo.{j}
 }
 
 #? Find the optimal scheduling
@@ -126,13 +126,13 @@ optMemoIter(j Int) => Real {
 solve(jobs [Job]) => [Job] {
 	#? Memoization table for the opt values. We use a map for the sake of redeability
 	[-1 : 0] -> memo [Int : Real]
-	for i in jobs@_range do memo +<- [
+	for i in jobs._range do memo +<- [
 		i : maxValue(
-			jobs@i.value + memo@{pCache@i},
-			memo@{i - 1}
+			jobs.{i}.value + memo.{pCache.{i}},
+			memo.{i - 1}
 		)
 	]
-	=> findSolution(jobs@_count - 1, [])
+	=> findSolution(jobs._count - 1, [])
 }
 
 #? PostProcess function to find solution in memoization table
@@ -142,9 +142,9 @@ solve(jobs [Job]) => [Job] {
 findSolution(j Int, solution [Job]) => [Job] {
 	if j < 0 do {
 		=> solution
-	} else if jobs@j.value + memo@{pCache@j} > memo@{j - 1} do {
-		jobs@j ->+ solution
-		=> findSolution(pCache@j, solution)
+	} else if jobs.{j}.value + memo.{pCache.{j}} > memo.{j - 1} do {
+		jobs.{j} ->+ solution
+		=> findSolution(pCache.{j}, solution)
 	} else {
 		=> findSolution(j - 1, solution)
 	}
@@ -185,13 +185,13 @@ drawJobs(jobs)
 #? Cache of job index and p(job index)
 #? We use a map for the sake of redeability
 pCache [Int : Int]
-for i in jobs@_range do pCache +<- [i : p(i, jobs)]
+for i in jobs._range do pCache +<- [i : p(i, jobs)]
 
 "{
 Computing optimal value...
-optRecursive() = ${optRecursive(jobs@_count - 1)}
-optMemo()      = ${optMemo(jobs@_count - 1)}
-optMemoIter()  = ${optMemoIter(jobs@_count - 1)}
+optRecursive() = ${optRecursive(jobs._count - 1)}
+optMemo()      = ${optMemo(jobs._count - 1)}
+optMemoIter()  = ${optMemoIter(jobs._count - 1)}
 }" -> _out
 
 "Finding solution..." -> _out

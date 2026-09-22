@@ -32,12 +32,12 @@ toText(state [[Int]]) => Text {
 	for row in state do {
 		for cell in row do {
 			if cell {
-				<= 0 do LIFE_STAGES@0 ->+ output
-				>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
-				=  1 when USE_GRADIENTS do LIFE_STAGES@1 ->+ output
-				=  2 when USE_GRADIENTS do LIFE_STAGES@2 ->+ output
-				=  3 when USE_GRADIENTS do LIFE_STAGES@3 ->+ output
-				>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
+				<= 0 do LIFE_STAGES.0 ->+ output
+				>= 1 when not USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
+				=  1 when USE_GRADIENTS do LIFE_STAGES.1 ->+ output
+				=  2 when USE_GRADIENTS do LIFE_STAGES.2 ->+ output
+				=  3 when USE_GRADIENTS do LIFE_STAGES.3 ->+ output
+				>= 4 when USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
 			}
 		}
 		"\n" ->+ output
@@ -50,8 +50,8 @@ toText(state [[Int]]) => Text {
 #? @return text
 toBraille(state [[Int]]) => Text {
 	output Text
-	rows Int <- state@_count
-	columns Int <- state@0@_count
+	rows Int <- state._count
+	columns Int <- state.0._count
 
 	# Iterate 3x2 chunks (a single braille char)
 	for chunkRowIdx in 0..rows-1..3 do {
@@ -67,14 +67,14 @@ toBraille(state [[Int]]) => Text {
 				for rowIdx in chunkRowIdx..chunkRowIdx + 2 do {
 					if rowIdx >= rows | colIdx >= columns do {
 						char +<- "0"
-					} else if state@rowIdx@colIdx {
+					} else if state.{rowIdx}.{colIdx} {
 						<= 0 do char +<- "0"
 						>= 1 do char +<- "1"
 					}
 				}
 
 			}
-			output +<- CODEX@{char as Int}
+			output +<- CODEX.{char as Int}
 		}
 		output +<- "\n"
 	}
@@ -88,18 +88,18 @@ toBraille(state [[Int]]) => Text {
 countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 	count Int
 	for dir in DIRS do {
-		rowDir Int <- dir@0
-		colDir Int <- dir@1
+		rowDir Int <- dir.0
+		colDir Int <- dir.1
 		neighbourRowIdx Int <- rowIdx + rowDir
 		if neighbourRowIdx {
-			< 0 | >= state@_count do skip
+			< 0 | >= state._count do skip
 		}
 		neighbourColIdx Int <- colIdx + colDir
 		if neighbourColIdx {
-			< 0 | >= state@neighbourRowIdx@_count do skip
+			< 0 | >= state.{neighbourRowIdx}._count do skip
 		}
 
-		if state@neighbourRowIdx@neighbourColIdx >= 1 do {
+		if state.{neighbourRowIdx}.{neighbourColIdx} >= 1 do {
 			1 ->+ count
 		}
 
@@ -112,13 +112,13 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 #? @return next generation state
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
-	for rowIdx in state@_range do {
-		state@rowIdx -> row [Int]
-		for colIdx in row@_range do {
+	for rowIdx in state._range do {
+		state.{rowIdx} -> row [Int]
+		for colIdx in row._range do {
 			countNeighbours(rowIdx, colIdx, state) -> count Int
 			if count {
-				= 3 do out@rowIdx@colIdx +<- 1
-				< 2 | >= 4 do out@rowIdx@colIdx <- 0
+				= 3 do out.{rowIdx}.{colIdx} +<- 1
+				< 2 | >= 4 do out.{rowIdx}.{colIdx} <- 0
 			}
 		}
 	}
@@ -244,9 +244,9 @@ const PRESETS [ Text : [[Int]] ] <- [
 
 "Welcome to Conway's game of life implementation in Giovi!" -> _out
 "Choose a preset:" -> _out
-for preset in PRESETS@_keys do {
+for preset in PRESETS._keys do {
 	"$preset" -> _out
-	toBraille(PRESETS@preset) -> _out
+	toBraille(PRESETS.{preset}) -> _out
 }
 
 preset Text
@@ -256,7 +256,7 @@ repeat {
 	if PRESETS =~ preset do break
 	"Sorry, the preset $preset is not available. Choose another" -> _out
 }
-currentGen [[Int]] <- PRESETS@preset
+currentGen [[Int]] <- PRESETS.{preset}
 
 i Int
 "\u001B[2J" ->+ _out

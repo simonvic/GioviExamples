@@ -6,9 +6,9 @@ const INF Int <- 99999999
 #? @param queue
 #? @return minimum edge
 extractMin(queue [Text : Int]) => Text {
-	min Text <- queue@_keys@0
+	min Text <- queue._keys.0
 	for u : cost in queue do {
-		if cost < queue@min do min <- u
+		if cost < queue.{min} do min <- u
 	}
 	if min != default do {
 		queue -<- min
@@ -37,8 +37,8 @@ printMST(mst [Text : Text]) {
 		if parent = "" do {
 			child -> _out
 		} else {
-			"$parent <--${graph@parent@child}--> $child" -> _out
-			graph@parent@child ->+ mstCost
+			"$parent <--${graph.{parent}.{child}}--> $child" -> _out
+			graph.{parent}.{child} ->+ mstCost
 		}
 	}
 	"cost: $mstCost" -> _out
@@ -64,7 +64,7 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 	# init mst with all orphans
 	for u in graph do [u : ""] ->+ mst
 
-	repeat if queue@_count != 0 {
+	repeat if queue._count != 0 {
 		"\nqueue: $queue" -> _out
 
 		# Extract vertex with minimum cost from the queue
@@ -72,20 +72,20 @@ prim(graph [Text : [Text : Int]]) => [Text : Text] {
 		min ->- queue
 		min ->+ explored
 
-		graph@min -> exitingEdgesFromMin [Text : Int]
+		graph.{min} -> exitingEdgesFromMin [Text : Int]
 
 		# Print exiting edges
 		"min: $min" -> _out
 		for v in exitingEdgesFromMin do {
 			if v ~= explored do skip
-			"\t<--${exitingEdgesFromMin@v}--> $v" -> _out
+			"\t<--${exitingEdgesFromMin.{v}}--> $v" -> _out
 		}
 
 		for v : cost in exitingEdgesFromMin do {
 			if v ~= explored do skip
-			if cost < queue@v do {
+			if cost < queue.{v} do {
 				[v : cost] ->+ queue
-				mst@v <- min
+				mst.{v} <- min
 			}
 		}
 	}
@@ -118,14 +118,14 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 		}
 		if found do skip
 		if u in edges do {
-			[v : cost] ->+ edges@u
+			[v : cost] ->+ edges.{u}
 		} else {
 			[u : [v : cost]] ->+ edges
 		}
 	}
 	"unique $edges" -> _out
 	sorted [[Text ** 2]]
-	repeat if edges@_count != 0 do {
+	repeat if edges._count != 0 do {
 		minCost Int <- INF
 		minEdge [Text ** 2]
 		for u : [v : cost] in edges do {
@@ -135,8 +135,8 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 			}
 		}
 		if minEdge = ["" ""] do break
-		[minEdge@0 minEdge@1] ->+ sorted
-		minEdge@1 ->- edges@{minEdge@0}
+		[minEdge.0 minEdge.1] ->+ sorted
+		minEdge.1 ->- edges.{minEdge.0}
 		sorted -> _out
 	}
 	=> sorted
@@ -144,10 +144,10 @@ getEdgesOrderedByIncreasingCost(graph [Text : [Text : Int]]) => [[Text]] {
 	# Old
 	#for u : edge in graph do {
 	#	for v : cost in edge do {
-	#		if edges =~ u & edges@u =~ v & cost < edges@u@v do {
-	#			cost -> edges@u@v
-	#		} else if edges =~ v & edges@v =~ u & cost < edges@v@u do {
-	#			cost -> edges@v@u
+	#		if edges =~ u & edges.{u} =~ v & cost < edges.{u}.{v} do {
+	#			cost -> edges.{u}.{v}
+	#		} else if edges =~ v & edges.{v} =~ u & cost < edges.{v}.{u} do {
+	#			cost -> edges.{v}.{u}
 	#		} else {
 	#			[u : [v : cost]] ->+ edges
 	#		}
@@ -188,8 +188,8 @@ kruskall(graph [Text : [Text : Int]]) => [Text : Text] {
 	"components $components" -> _out
 	mst [Text : Text]
 	for edge in edges do {
-		u Text <- edge@0
-		v Text <- edge@1
+		u Text <- edge.0
+		v Text <- edge.1
 		# if they're in the same connected component, adding the edge would
 		# cause a cycle
 		if findComponent(u, components) = findComponent(v, components) do skip

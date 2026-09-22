@@ -23,9 +23,9 @@ fibonacciBottomUp(n Int) => Int {
 	if n = 0 | n = 1 do => n
 	cache [Int] <- [1 1]
 	for i in 2..n do {
-		cache@{i - 2} + cache@{i - 1} ->+ cache
+		cache.{i - 2} + cache.{i - 1} ->+ cache
 	}
-	=> cache@{n - 1}
+	=> cache.{n - 1}
 }
 
 #? Iterative fibonacci with memoization via associative array
@@ -34,9 +34,9 @@ fibonacciBottomUp(n Int) => Int {
 fibonacciAssociativeMemoIter(n Int) => Int {
 	cache [Int : Int] <- [ 1:1 2:1 ]
 	for i in 3..n do {
-		cache +<- [ i : cache@{i - 1} + cache@{i - 2} ]
+		cache +<- [ i : cache.{i - 1} + cache.{i - 2} ]
 	}
-	=> cache@n;
+	=> cache.{n};
 }
 
 #? Iterative fibonacci with memoization via array
@@ -46,9 +46,9 @@ fibonacciMemoIter(n Int) => Int {
 	cache [Int] <- [1 1]
 	# NOTE: arrays indexes are 0-based
 	for i in 2..n-1 do {
-		cache +<- cache@{i - 1} + cache@{i - 2}
+		cache +<- cache.{i - 1} + cache.{i - 2}
 	}
-	=> cache@{n - 1};
+	=> cache.{n - 1};
 }
 
 #? Iterative fibonacci with better space complexity

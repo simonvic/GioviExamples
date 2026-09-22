@@ -45,22 +45,22 @@ min(a Int, b Int, c Int) => Int {
 #? @param y Text
 #? @return mismatch cost
 sequenceAlignment(x Text, y Text) => Int {
-	m Int <- x@_count
-	n Int <- y@_count
+	m Int <- x._count
+	n Int <- y._count
 	matrix [[Int ** n] ** m]
-	for i in 0..m - 1 do matrix@i@0 <- i * COST_GAP
-	for j in 0..n - 1 do matrix@0@j <- j * COST_GAP
+	for i in 0..m - 1 do matrix.{i}.{0} <- i * COST_GAP
+	for j in 0..n - 1 do matrix.{0}.{j} <- j * COST_GAP
 	for i in 1..m - 1 do
 		for j in 1..n - 1 do
-			matrix@i@j <- min(
-				getMismatchCost(x@i, y@j) + matrix@{i - 1}@{j - 1},
-				COST_GAP + matrix@{i - 1}@j,
-				COST_GAP + matrix@i@{j - 1},
+			matrix.{i}.{j} <- min(
+				getMismatchCost(x.{i}, y.{j}) + matrix.{i - 1}.{j - 1},
+				COST_GAP + matrix.{i - 1}.{j},
+				COST_GAP + matrix.{i}.{j - 1},
 			)
 	"------" -> _out
-	for i in 0..m - 1 do matrix@i -> _out
+	for i in 0..m - 1 do matrix.{i} -> _out
 	"------" -> _out
-	=> matrix@{m-1}@{n-1}
+	=> matrix.{m-1}.{n-1}
 }
 
 

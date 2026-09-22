@@ -50,12 +50,12 @@ State <
 		for row in self.state do {
 			for cell in row do {
 				if cell {
-					<= 0 do LIFE_STAGES@0 ->+ output;
-					>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output;
-					=  1 when USE_GRADIENTS do LIFE_STAGES@1 ->+ output;
-					=  2 when USE_GRADIENTS do LIFE_STAGES@2 ->+ output;
-					=  3 when USE_GRADIENTS do LIFE_STAGES@3 ->+ output;
-					>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output;
+					<= 0 do LIFE_STAGES.0 ->+ output;
+					>= 1 when not USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output;
+					=  1 when USE_GRADIENTS do LIFE_STAGES.1 ->+ output;
+					=  2 when USE_GRADIENTS do LIFE_STAGES.2 ->+ output;
+					=  3 when USE_GRADIENTS do LIFE_STAGES.3 ->+ output;
+					>= 4 when USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output;
 				}
 			}
 			"\n" ->+ output
@@ -68,8 +68,8 @@ State <
 	#? @return text
 	self toBraille() => Text {
 		output Text
-		rows Int <- self.state@_count
-		columns Int <- self.state@0@_count
+		rows Int <- self.state._count
+		columns Int <- self.state.0._count
 
 		# Iterate 3x2 chunks (a single braille char)
 		for chunkRowIdx in 0..rows-1..3 do {
@@ -85,14 +85,14 @@ State <
 					for rowIdx in chunkRowIdx..chunkRowIdx + 2 do {
 						if rowIdx >= rows | colIdx >= columns do {
 							char +<- "0"
-						} else if self.state@rowIdx@colIdx {
+						} else if self.state.{rowIdx}.{colIdx} {
 							<= 0 do char +<- "0";
 							>= 1 do char +<- "1";
 						}
 					}
 
 				}
-				output +<- CODEX@{char as Int}
+				output +<- CODEX.{char as Int}
 			}
 			output +<- "\n"
 		}
@@ -106,18 +106,18 @@ State <
 	self countNeighbours(rowIdx Int, colIdx Int) => Int {
 		count Int
 		for dir in DIRS do {
-			rowDir Int <- dir@0
-			colDir Int <- dir@1
+			rowDir Int <- dir.0
+			colDir Int <- dir.1
 			neighbourRowIdx Int <- rowIdx + rowDir
 			if neighbourRowIdx {
-				< 0 | >= self.state@_count do skip
+				< 0 | >= self.state._count do skip
 			}
 			neighbourColIdx Int <- colIdx + colDir
 			if neighbourColIdx {
-				< 0 | >= self.state@neighbourRowIdx@_count do skip
+				< 0 | >= self.state.{neighbourRowIdx}._count do skip
 			}
 
-			if self.state@neighbourRowIdx@neighbourColIdx >= 1 do {
+			if self.state.{neighbourRowIdx}.{neighbourColIdx} >= 1 do {
 				1 ->+ count
 			}
 
@@ -130,11 +130,11 @@ State <
 	#? @return next generation state
 	self update() => State {
 		out [[Int]] <- self.state
-		for rowIdx in self.state@_range do {
-			for colIdx in self.state@rowIdx@_range do {
+		for rowIdx in self.state._range do {
+			for colIdx in self.state.{rowIdx}._range do {
 				if self.countNeighbours(rowIdx, colIdx) {
-					= 3 do out@rowIdx@colIdx +<- 1;
-					< 2 | >= 4 do out@rowIdx@colIdx <- 0;
+					= 3 do out.{rowIdx}.{colIdx} +<- 1;
+					< 2 | >= 4 do out.{rowIdx}.{colIdx} <- 0;
 				}
 			}
 		}
@@ -159,7 +159,7 @@ for r in 0..rows - 1 do {
 	for c in 0..columns - 1 do {
 		Ansi.moveTo(0, 0)
 		#currentGen.toBraille() -> _out
-		currentGen.state@r@c <- Random.integer() % 4
+		currentGen.state.{r}.{c} <- Random.integer() % 4
 	}
 }
 

@@ -4,27 +4,27 @@ merge(l [Int], r [Int], level Int) => [Int] {
 	merged [Int]
 	i Int
 	j Int
-	repeat if i < l@_count & j < r@_count {
-		if l@i < r@j do {
-			l@i ->+ merged
+	repeat if i < l._count & j < r._count {
+		if l.{i} < r.{j} do {
+			l.{i} ->+ merged
 			i +<- 1
 		} else {
-			r@j ->+ merged
+			r.{j} ->+ merged
 			j +<- 1
 		}
 	}
-	if i < l@_count do for k in i..l@_count - 1 do l@k ->+ merged
-	if j < r@_count do for k in j..r@_count - 1 do r@k ->+ merged
+	if i < l._count do for k in i..l._count - 1 do l.{k} ->+ merged
+	if j < r._count do for k in j..r._count - 1 do r.{k} ->+ merged
 	"|\t"^level + merged -> _out
 	=> merged
 }
 
 mergesort(a [Int], level Int default 0) => [Int] {
 	"|\t"^level + a -> _out
-	if a@_count = 1 do => a
-	half Int <- {a@_count / 2} as Int
-	a@0..half-1 -> l [Int]
-	a@half..a@_count-1 -> r [Int]
+	if a._count = 1 do => a
+	half Int <- {a._count / 2} as Int
+	a.{0..half-1} -> l [Int]
+	a.{half..a._count-1} -> r [Int]
 	"|\t"^level + "$l$r" -> _out
 	mergesort(l, level + 1) -> sortedL [Int]
 	mergesort(r, level + 1) -> sortedR [Int]

@@ -19,4 +19,4 @@ for word in words do {
 		else "> $input\tWRONG ($word)" -> _out
 }
 
-"Result: ($correct / ${words@_count}) ${correct / words@_count * 100}%" -> _out
+"Result: ($correct / ${words._count}) ${correct / words._count * 100}%" -> _out

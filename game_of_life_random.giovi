@@ -40,12 +40,12 @@ toText(state [[Int]]) => Text {
 	for row in state do {
 		for cell in row do {
 			if cell {
-				<= 0 do LIFE_STAGES@0 ->+ output
-				>= 1 when not USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
-				=  1 when USE_GRADIENTS do LIFE_STAGES@1 ->+ output
-				=  2 when USE_GRADIENTS do LIFE_STAGES@2 ->+ output
-				=  3 when USE_GRADIENTS do LIFE_STAGES@3 ->+ output
-				>= 4 when USE_GRADIENTS do LIFE_STAGES@{-1} ->+ output
+				<= 0 do LIFE_STAGES.0 ->+ output
+				>= 1 when not USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
+				=  1 when USE_GRADIENTS do LIFE_STAGES.1 ->+ output
+				=  2 when USE_GRADIENTS do LIFE_STAGES.2 ->+ output
+				=  3 when USE_GRADIENTS do LIFE_STAGES.3 ->+ output
+				>= 4 when USE_GRADIENTS do LIFE_STAGES.{-1} ->+ output
 			}
 		}
 		"\n" ->+ output
@@ -58,8 +58,8 @@ toText(state [[Int]]) => Text {
 #? @return text
 toBraille(state [[Int]]) => Text {
 	output Text
-	rows Int <- state@_count
-	columns Int <- state@0@_count
+	rows Int <- state._count
+	columns Int <- state.0._count
 
 	# Iterate 3x2 chunks (a single braille char)
 	for chunkRowIdx in 0..rows-1..3 do {
@@ -75,14 +75,14 @@ toBraille(state [[Int]]) => Text {
 				for rowIdx in chunkRowIdx..chunkRowIdx + 2 do {
 					if rowIdx >= rows | colIdx >= columns do {
 						char +<- "0"
-					} else if state@rowIdx@colIdx {
+					} else if state.{rowIdx}.{colIdx} {
 						<= 0 do char +<- "0"
 						>= 1 do char +<- "1"
 					}
 				}
 
 			}
-			output +<- CODEX@{char as Int}
+			output +<- CODEX.{char as Int}
 		}
 		output +<- "\n"
 	}
@@ -96,18 +96,18 @@ toBraille(state [[Int]]) => Text {
 countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 	count Int
 	for dir in DIRS do {
-		rowDir Int <- dir@0
-		colDir Int <- dir@1
+		rowDir Int <- dir.0
+		colDir Int <- dir.1
 		neighbourRowIdx Int <- rowIdx + rowDir
 		if neighbourRowIdx {
-			< 0 | >= state@_count do skip
+			< 0 | >= state._count do skip
 		}
 		neighbourColIdx Int <- colIdx + colDir
 		if neighbourColIdx {
-			< 0 | >= state@neighbourRowIdx@_count do skip
+			< 0 | >= state.{neighbourRowIdx}._count do skip
 		}
 
-		if state@neighbourRowIdx@neighbourColIdx >= 1 do {
+		if state.{neighbourRowIdx}.{neighbourColIdx} >= 1 do {
 			1 ->+ count
 		}
 
@@ -120,11 +120,11 @@ countNeighbours(rowIdx Int, colIdx Int, state [[Int]]) => Int {
 #? @return next generation state
 update(state [[Int]]) => [[Int]] {
 	out [[Int]] <- state
-	for rowIdx in state@_range do {
-		for colIdx in state@rowIdx@_range do {
+	for rowIdx in state._range do {
+		for colIdx in state.{rowIdx}._range do {
 			if countNeighbours(rowIdx, colIdx, state) {
-				= 3 do out@rowIdx@colIdx +<- 1
-				< 2 | >= 4 do out@rowIdx@colIdx <- 0
+				= 3 do out.{rowIdx}.{colIdx} +<- 1
+				< 2 | >= 4 do out.{rowIdx}.{colIdx} <- 0
 			}
 		}
 	}
@@ -135,23 +135,23 @@ update(state [[Int]]) => [[Int]] {
 
 _in -> input Text
 numbers Text
-for c in input@_chars do {
+for c in input._chars do {
 	if c ~= "0123456789" do {
 		c ->+ numbers
 	}
 }
 currentGen [[Int]]
 size Int <- 50
-repeat if numbers@_count > size {
+repeat if numbers._count > size {
 	row [Int]
-	for c in numbers@{0..size}@_chars do {
+	for c in numbers.{0..size}._chars do {
 		if c as Int {
 			<= 5 do 0 ->+ row
 			>= 6 do 1 ->+ row
 		}
 	}
 	row ->+ currentGen
-	numbers@size..numbers@_count - 1 -> numbers
+	numbers.{size..numbers._count - 1} -> numbers
 }
 
 for row in currentGen do row -> _out

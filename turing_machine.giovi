@@ -99,13 +99,13 @@ produce(machine Machine, conf Configuration) => Configuration {
 		"_" ->+ conf.tape
 		input <- "_"
 	} else {
-		input <- conf.tape@{conf.pointer}
+		input <- conf.tape.{conf.pointer}
 	}
 
 	# find transition
 	transition Transition
 	if conf.state.transitions =~ input do {
-		transition <- conf.state.transitions@input
+		transition <- conf.state.transitions.{input}
 	} else {
 		transition <- Transition.<
 			output: input,
@@ -117,7 +117,7 @@ produce(machine Machine, conf Configuration) => Configuration {
 
 	# update tape
 	newTape [Text] <- conf.tape
-	newTape@{conf.pointer} <- transition.output
+	newTape.{conf.pointer} <- transition.output
 
 	# move
 	newPointer Int <- conf.pointer
@@ -126,8 +126,8 @@ produce(machine Machine, conf Configuration) => Configuration {
 		= L when newPointer >= 1 do 1 ->- newPointer
 	}
 
-	newState State <- machine.states@{transition.newStateLabel}
-	=> Configuration.<newTape, newPointer, newTape@_count , newState>
+	newState State <- machine.states.{transition.newStateLabel}
+	=> Configuration.<newTape, newPointer, newTape._count , newState>
 }
 
 ################################################################################
@@ -368,10 +368,10 @@ const STATES_PRESETS [Text : [Text : State]] <- [
 
 ]
 
-machine Machine <- Machine.<states: STATES_PRESETS@"bitshift_right">
+machine Machine <- Machine.<states: STATES_PRESETS."bitshift_right">
 
 tape [Text] <- "011001" / ""
-configuration Configuration <- Configuration.<tape, 0, tape@_count , machine.states@"initial">
+configuration Configuration <- Configuration.<tape, 0, tape._count , machine.states."initial">
 
 prettyMachine(machine) -> _out
 "=== Computing" -> _out
