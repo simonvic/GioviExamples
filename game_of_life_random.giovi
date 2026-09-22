@@ -135,7 +135,7 @@ update(state [[Int]]) => [[Int]] {
 
 _in -> input Text
 numbers Text
-for c in input@* do {
+for c in input@_chars do {
 	if c ~= "0123456789" do {
 		c ->+ numbers
 	}
@@ -144,7 +144,7 @@ currentGen [[Int]]
 size Int <- 50
 repeat if numbers@_count > size {
 	row [Int]
-	for c in numbers@{0..size}@* do {
+	for c in numbers@{0..size}@_chars do {
 		if c as Int {
 			<= 5 do 0 ->+ row
 			>= 6 do 1 ->+ row
