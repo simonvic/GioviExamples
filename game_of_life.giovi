@@ -244,19 +244,19 @@ const PRESETS [ Text : [[Int]] ] <- [
 
 "Welcome to Conway's game of life implementation in Giovi!" -> _out
 "Choose a preset:" -> _out
-for preset in PRESETS._keys do {
-	"$preset" -> _out
-	toBraille(PRESETS.{preset}) -> _out
+for presetName : preset in PRESETS do {
+	"$presetName" -> _out
+	toBraille(preset) -> _out
 }
 
-preset Text
+presetName Text
 repeat {
 	"> " ->+ _out
-	_in -> preset
-	if PRESETS =~ preset do break
-	"Sorry, the preset $preset is not available. Choose another" -> _out
+	_in -> presetName
+	if presetName in PRESETS do break
+	"Sorry, the preset $presetName is not available. Choose another" -> _out
 }
-currentGen [[Int]] <- PRESETS.{preset}
+currentGen [[Int]] <- PRESETS.{presetName}
 
 i Int
 "\u001B[2J" ->+ _out
