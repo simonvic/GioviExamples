@@ -60,7 +60,7 @@ ar [Real] <- [
 	0x1e10p69 # hex exponent
 ]
 
-at [Text] <- [
+aT [Text] <- [
 	"text",
 	"{
 	this is a "text block"
